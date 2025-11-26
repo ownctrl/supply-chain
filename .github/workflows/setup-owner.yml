@@ -1,0 +1,49 @@
+name: Setup Owner
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  setup-owner:
+    name: Setup Repository Owner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Get Repository Owner
+        id: owner
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER}" >> $GITHUB_OUTPUT
+
+      - name: Update Examples
+        run: |
+          # Replace 'miccy' with the new owner in all json files in examples/
+          sed -i 's/miccy\//${{ steps.owner.outputs.owner }}\//g' examples/*.json
+          echo "Updated examples to use owner: ${{ steps.owner.outputs.owner }}"
+
+      - name: Update License
+        run: |
+          YEAR=$(date +%Y)
+          # Append new copyright notice
+          echo "" >> LICENSE
+          echo "Copyright (c) $YEAR ${{ steps.owner.outputs.owner }}" >> LICENSE
+          echo "Updated LICENSE with new copyright."
+
+      - name: Delete Setup Workflow
+        run: |
+          rm .github/workflows/setup-owner.yml
+          echo "Deleted setup workflow."
+
+      - name: Commit and Push Changes
+        run: |
+          git add examples/ LICENSE .github/workflows/setup-owner.yml
+          git commit -m "chore: setup repository owner (${{ steps.owner.outputs.owner }})"
+          git push

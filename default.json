@@ -1,0 +1,132 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Shared Renovate preset: quiet-but-safe grouping; multi-ecosystem support (JS/Bun, Nix, Terraform, Ansible, Docker, GitHub Actions); dev tooling automerge; majors separate.",
+  "extends": ["config:recommended"],
+  "platformAutomerge": true,
+  "ignoreTests": false,
+  "timezone": "Europe/Prague",
+  "schedule": ["before 06:00 on monday"],
+  "labels": ["dependencies", "renovate"],
+  "dependencyDashboard": true,
+  "semanticCommits": "enabled",
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "stabilityDays": 3,
+  "prConcurrentLimit": 4,
+  "prHourlyLimit": 0,
+  "prCreation": "not-pending",
+  "rebaseWhen": "behind-base-branch",
+  "ignorePaths": ["**/node_modules/**", "**/vendor/**", "**/dist/**", "**/build/**"],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"],
+    "assignAutomerge": false,
+    "transitiveRemediation": true
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 06:00 on monday"],
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["npm", "pnpm", "yarn"],
+      "postUpdateOptions": ["npmDedupe", "pnpmDedupe", "yarnDedupeFewer"]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "pinDigests": true
+    },
+    {
+      "matchManagers": [
+        "npm",
+        "bun",
+        "pnpm",
+        "yarn",
+        "docker",
+        "github-actions",
+        "nix",
+        "terraform",
+        "ansible"
+      ],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "all non-major updates",
+      "separateMinorPatch": false
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "groupName": "major updates (separate)",
+      "prPriority": -1,
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "CI: GitHub Actions",
+      "separateMinorPatch": false,
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "Dev tooling",
+      "separateMinorPatch": false,
+      "automerge": true,
+      "automergeType": "pr",
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchPackagePatterns": ["^@biomejs/"],
+      "groupName": "Biome",
+      "separateMinorPatch": false,
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchPackagePatterns": ["^oxlint", "^@oxc-project/"],
+      "groupName": "Oxlint",
+      "separateMinorPatch": false,
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchPackagePatterns": ["^@types/", "^typescript$"],
+      "groupName": "TypeScript",
+      "separateMinorPatch": false,
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchPackagePatterns": ["^vitest", "^@vitest/", "^jest", "^@testing-library/"],
+      "groupName": "Testing tools",
+      "separateMinorPatch": false,
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchManagers": ["nix"],
+      "groupName": "Nix",
+      "separateMinorPatch": false,
+      "prPriority": 5
+    },
+    {
+      "matchManagers": ["terraform"],
+      "groupName": "Terraform",
+      "separateMinorPatch": false,
+      "prPriority": 5
+    },
+    {
+      "matchManagers": ["ansible"],
+      "groupName": "Ansible",
+      "separateMinorPatch": false,
+      "prPriority": 5
+    },
+    {
+      "matchManagers": ["docker"],
+      "matchUpdateTypes": ["pin"],
+      "groupName": "Docker digests",
+      "automerge": false,
+      "prPriority": 10
+    }
+  ]
+}

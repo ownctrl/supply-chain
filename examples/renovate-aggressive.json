@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Example: More aggressive updates",
+  "extends": [
+    "github>miccy/renovate-config"
+  ],
+  "schedule": [
+    "at any time"
+  ],
+  "prConcurrentLimit": 10,
+  "stabilityDays": 0
+}

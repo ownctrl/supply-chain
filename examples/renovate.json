@@ -1,0 +1,7 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Example: Basic usage of the shared preset",
+  "extends": [
+    "github>miccy/renovate-config"
+  ]
+}

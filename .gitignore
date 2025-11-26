@@ -1,0 +1,15 @@
+# Renovate local testing and debug files
+.renovate/
+renovate-debug.log
+renovate.log
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
