@@ -9,9 +9,24 @@
 
 **🤖 Production-ready shared Renovate preset for automated dependency management**
 
-_Multi-ecosystem • Safe defaults • Smart grouping • Automerge_
+_Multi-ecosystem • Security-hardened • Smart grouping • Supply chain protection_
 
 </div>
+
+---
+
+## ⚠️ Security Notice: Shai-Hulud 2.0
+
+> **This preset has been hardened in response to the Shai-Hulud 2.0 npm supply chain attack (November 2025).**
+
+Key security measures included:
+- 🛡️ **7-day stability period** before updates are proposed
+- 🔒 **No automerge for production dependencies**
+- ⚠️ **Warnings on known compromised packages**
+- 📋 **Dashboard approval required for majors**
+- 🔗 **`npm:unpublishSafe`** preset to avoid unpublished packages
+
+For more information, see [dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud).
 
 ---
 
@@ -19,18 +34,21 @@ _Multi-ecosystem • Safe defaults • Smart grouping • Automerge_
 
 ### 🎯 Features
 
-A shared Renovate preset for organizations and personal repos. It keeps noise low while staying safe:
+A shared Renovate preset for organizations and personal repos. Security-first with smart defaults:
 
-- Groups **all non-major** updates into one PR (per repo), majors stay separate
-- Uses **Platform Automerge** (GitHub Native) for faster merging
-- Automerges **dev tooling** (Biome, Oxlint, TypeScript, testing libs) and **GitHub Actions** once checks pass
+- **7-day `stabilityDays`** and `minimumReleaseAge` for supply chain protection
+- **No automerge for production deps** — only trusted dev tooling automerges
+- **`npm:unpublishSafe`** preset — avoids packages that might be unpublished
+- Groups **all non-major** updates into one PR, majors stay separate
+- Uses **Platform Automerge** (GitHub Native) for faster merging of approved PRs
+- Automerges only **trusted dev tooling** (Biome, Oxlint, TypeScript, Vitest, ESLint, Prettier)
 - Automatic **deduplication** for npm/pnpm/yarn lockfiles
-- Waits **3 days** (`stabilityDays`) before proposing updates for stability
-- Enables weekly **lock file maintenance** with automerge
+- Weekly **lock file maintenance** with automerge
 - **Semantic commits** enabled (`chore(deps): update package`)
 - **Vulnerability alerts** with security labels and transitive remediation
-- Supports **Bun, npm, pnpm, yarn, Nix, Terraform, Ansible, Docker, GitHub Actions**
 - **Pins GitHub Actions** to digests for security
+- **Warnings on Shai-Hulud affected packages**
+- Supports **Bun, npm, pnpm, yarn, Nix, Terraform, Ansible, Docker, GitHub Actions**
 
 ### 🛠️ Supported Ecosystems
 
@@ -64,7 +82,7 @@ Replace `ORG_OR_USER` with your org (e.g. `ownctrl`) or your username (`miccy`).
 ### Bun & Biome & Oxlint
 
 - **Bun** is handled via Renovate's `bun` manager. Commit `bun.lock` (or `bun.lockb`) for reliable updates.
-- **Biome** (`@biomejs/*`) is treated as dev tooling and grouped + automerged on non-major updates.
+- **Biome** (`@biomejs/*`) is treated as trusted dev tooling and grouped + automerged on non-major updates.
 - **Oxlint** (`oxlint`, `@oxc-project/*`) follows the same pattern as Biome.
 
 ### Nix & NixOS
@@ -86,18 +104,19 @@ Replace `ORG_OR_USER` with your org (e.g. `ownctrl`) or your username (`miccy`).
 
 ## Policy summary
 
-- Timezone: `Europe/Prague`, schedule: Mondays before 06:00
-- `stabilityDays`: 3 days for stability
-- `semanticCommits`: enabled for consistent commit messages
-- `prCreation`: not-pending (creates PRs without waiting for checks)
-- `rebaseWhen`: behind-base-branch (auto-rebase when behind)
-- `prConcurrentLimit`: 4 to avoid PR storms
-- `vulnerabilityAlerts`: enabled with security labels
-- `lockFileMaintenance`: enabled weekly with automerge
-- `ignorePaths`: node_modules, vendor, dist, build
-- Groups: non-majors together, majors separate
-- Automerge: GitHub Actions, dev tooling, Biome, Oxlint, TypeScript, testing tools
-- Docker digests: grouped separately with high priority (manual review)
+| Setting | Value | Reason |
+|---------|-------|--------|
+| `stabilityDays` | 7 days | Supply chain protection |
+| `minimumReleaseAge` | 7 days | Avoid freshly published packages |
+| `npm:unpublishSafe` | enabled | Avoid unpublished packages |
+| `rangeStrategy` | pin | Lock exact versions |
+| `prConcurrentLimit` | 4 | Avoid PR storms |
+| `schedule` | Mondays 06:00 | Weekly updates |
+| `timezone` | Europe/Prague | Local timezone |
+| `automerge` (prod deps) | ❌ disabled | Security review required |
+| `automerge` (trusted dev) | ✅ enabled | Biome, TypeScript, Vitest, etc. |
+| `vulnerabilityAlerts` | ✅ enabled | With security labels |
+| `lockFileMaintenance` | ✅ weekly | With automerge |
 
 ## Testing locally
 
@@ -118,9 +137,47 @@ npx renovate --platform=local --dry-run=true
 
 See practical examples in [`examples/`](./examples/) directory.
 
+### 🔒 Lockdown Mode (Active Threats)
+
+For maximum security during active supply chain attacks ([example](./examples/renovate-lockdown.json)):
+
+```json
+{
+  "extends": ["github>ORG_OR_USER/renovate-config"],
+  "stabilityDays": 14,
+  "minimumReleaseAge": "14 days",
+  "prConcurrentLimit": 2,
+  "dependencyDashboardApproval": true,
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["*"],
+      "automerge": false
+    }
+  ]
+}
+```
+
+### 🛡️ Security-Hardened (Recommended)
+
+Balanced security without too much friction ([example](./examples/renovate-security-hardened.json)):
+
+```json
+{
+  "extends": ["github>ORG_OR_USER/renovate-config"],
+  "stabilityDays": 7,
+  "minimumReleaseAge": "7 days",
+  "packageRules": [
+    {
+      "matchDepTypes": ["dependencies"],
+      "automerge": false
+    }
+  ]
+}
+```
+
 ### More aggressive updates
 
-For projects where you want faster updates ([example](./examples/renovate-aggressive.json)):
+For non-critical projects where you want faster updates ([example](./examples/renovate-aggressive.json)):
 
 ```json
 {
@@ -131,7 +188,9 @@ For projects where you want faster updates ([example](./examples/renovate-aggres
 }
 ```
 
-### Disable automerge
+⚠️ **Warning**: Not recommended during active supply chain threats!
+
+### Disable automerge completely
 
 For critical projects requiring manual review ([example](./examples/renovate-no-automerge.json)):
 
@@ -159,9 +218,30 @@ For teams in different timezones:
 }
 ```
 
+## Shai-Hulud Affected Packages
+
+This preset includes warnings for packages affected by the Shai-Hulud 2.0 attack. When Renovate proposes updates for these packages, the PR will include:
+
+- ⚠️ Security warning banner
+- Checklist for verification
+- Links to IOC lists
+
+**Currently monitored packages:**
+- `@postman/tunnel-agent`, `posthog-node`, `posthog-js`, `@posthog/agent`
+- `@asyncapi/specs`, `@asyncapi/openapi-schema-parser`, `@asyncapi/avro-schema-parser`
+- `zapier-platform-core`, `zapier-platform-cli`, `@zapier/zapier-sdk`
+- `@ensdomains/ensjs`, `@ensdomains/content-hash`, `ethereum-ens`
+- `angulartics2`, `koa2-swagger-ui`, `tinycolor2`, `ngx-bootstrap`
+
+For the complete list, see [dont-be-shy-hulud IOC database](https://github.com/miccy/dont-be-shy-hulud/blob/main/ioc/malicious-packages.json).
+
 ---
 
+## Related Resources
 
+- 🪱 [dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud) — Shai-Hulud 2.0 detection and remediation guide
+- 🔒 [Socket.dev](https://socket.dev) — Supply chain security scanning
+- 📊 [Datadog IOCs](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0) — Official IOC list
 
 ---
 

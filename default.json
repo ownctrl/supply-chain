@@ -1,7 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Shared Renovate preset: quiet-but-safe grouping; multi-ecosystem support (JS/Bun, Nix, Terraform, Ansible, Docker, GitHub Actions); dev tooling automerge; majors separate.",
-  "extends": ["config:recommended"],
+  "description": "Shared Renovate preset: Security-hardened for supply chain protection. Multi-ecosystem support (JS/Bun, Nix, Terraform, Ansible, Docker, GitHub Actions). Increased stabilityDays, unpublishSafe, careful automerge.",
+  "extends": [
+    "config:recommended",
+    "npm:unpublishSafe"
+  ],
   "platformAutomerge": true,
   "ignoreTests": false,
   "timezone": "Europe/Prague",
@@ -12,7 +15,8 @@
   "commitMessagePrefix": "chore(deps):",
   "commitMessageAction": "update",
   "commitMessageTopic": "{{depName}}",
-  "stabilityDays": 3,
+  "stabilityDays": 7,
+  "minimumReleaseAge": "7 days",
   "prConcurrentLimit": 4,
   "prHourlyLimit": 0,
   "prCreation": "not-pending",
@@ -20,9 +24,10 @@
   "ignorePaths": ["**/node_modules/**", "**/vendor/**", "**/dist/**", "**/build/**"],
   "vulnerabilityAlerts": {
     "enabled": true,
-    "labels": ["security"],
+    "labels": ["security", "priority:high"],
     "assignAutomerge": false,
-    "transitiveRemediation": true
+    "transitiveRemediation": true,
+    "prPriority": 100
   },
   "lockFileMaintenance": {
     "enabled": true,
@@ -31,14 +36,18 @@
   },
   "packageRules": [
     {
+      "description": "npm/pnpm/yarn: Enable deduplication, pin dependencies",
       "matchManagers": ["npm", "pnpm", "yarn"],
-      "postUpdateOptions": ["npmDedupe", "pnpmDedupe", "yarnDedupeFewer"]
+      "postUpdateOptions": ["npmDedupe", "pnpmDedupe", "yarnDedupeFewer"],
+      "rangeStrategy": "pin"
     },
     {
+      "description": "GitHub Actions: Pin to digests for security",
       "matchManagers": ["github-actions"],
       "pinDigests": true
     },
     {
+      "description": "Group all non-major updates together",
       "matchManagers": [
         "npm",
         "bun",
@@ -55,12 +64,15 @@
       "separateMinorPatch": false
     },
     {
+      "description": "Major updates: Require dashboard approval",
       "matchUpdateTypes": ["major"],
       "groupName": "major updates (separate)",
       "prPriority": -1,
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": true,
+      "automerge": false
     },
     {
+      "description": "GitHub Actions: Automerge (pinned digests are safe)",
       "matchManagers": ["github-actions"],
       "groupName": "CI: GitHub Actions",
       "separateMinorPatch": false,
@@ -68,14 +80,55 @@
       "automergeType": "pr"
     },
     {
+      "description": "Dev tooling: Automerge ONLY for trusted packages",
       "matchDepTypes": ["devDependencies"],
-      "groupName": "Dev tooling",
+      "matchPackagePatterns": [
+        "^@biomejs/",
+        "^oxlint$",
+        "^@oxc-project/",
+        "^@types/",
+        "^typescript$",
+        "^vitest",
+        "^@vitest/",
+        "^jest$",
+        "^@testing-library/",
+        "^prettier$",
+        "^eslint$",
+        "^@eslint/"
+      ],
+      "groupName": "Dev tooling (trusted)",
       "separateMinorPatch": false,
       "automerge": true,
-      "automergeType": "pr",
-      "rangeStrategy": "bump"
+      "automergeType": "pr"
     },
     {
+      "description": "Other devDependencies: NO automerge (supply chain risk)",
+      "matchDepTypes": ["devDependencies"],
+      "excludePackagePatterns": [
+        "^@biomejs/",
+        "^oxlint$",
+        "^@oxc-project/",
+        "^@types/",
+        "^typescript$",
+        "^vitest",
+        "^@vitest/",
+        "^jest$",
+        "^@testing-library/",
+        "^prettier$",
+        "^eslint$",
+        "^@eslint/"
+      ],
+      "groupName": "Dev dependencies (review required)",
+      "automerge": false
+    },
+    {
+      "description": "Production dependencies: NEVER automerge",
+      "matchDepTypes": ["dependencies", "peerDependencies", "optionalDependencies"],
+      "automerge": false,
+      "prPriority": 10
+    },
+    {
+      "description": "Biome: Trusted, automerge",
       "matchPackagePatterns": ["^@biomejs/"],
       "groupName": "Biome",
       "separateMinorPatch": false,
@@ -83,6 +136,7 @@
       "automergeType": "pr"
     },
     {
+      "description": "Oxlint: Trusted, automerge",
       "matchPackagePatterns": ["^oxlint", "^@oxc-project/"],
       "groupName": "Oxlint",
       "separateMinorPatch": false,
@@ -90,6 +144,7 @@
       "automergeType": "pr"
     },
     {
+      "description": "TypeScript types: Trusted, automerge",
       "matchPackagePatterns": ["^@types/", "^typescript$"],
       "groupName": "TypeScript",
       "separateMinorPatch": false,
@@ -97,6 +152,7 @@
       "automergeType": "pr"
     },
     {
+      "description": "Testing tools: Trusted, automerge",
       "matchPackagePatterns": ["^vitest", "^@vitest/", "^jest", "^@testing-library/"],
       "groupName": "Testing tools",
       "separateMinorPatch": false,
@@ -104,29 +160,71 @@
       "automergeType": "pr"
     },
     {
+      "description": "Nix: Group together, high priority",
       "matchManagers": ["nix"],
       "groupName": "Nix",
       "separateMinorPatch": false,
       "prPriority": 5
     },
     {
+      "description": "Terraform: Group together, high priority",
       "matchManagers": ["terraform"],
       "groupName": "Terraform",
       "separateMinorPatch": false,
       "prPriority": 5
     },
     {
+      "description": "Ansible: Group together, high priority",
       "matchManagers": ["ansible"],
       "groupName": "Ansible",
       "separateMinorPatch": false,
       "prPriority": 5
     },
     {
+      "description": "Docker digests: Manual review required",
       "matchManagers": ["docker"],
       "matchUpdateTypes": ["pin"],
       "groupName": "Docker digests",
       "automerge": false,
       "prPriority": 10
+    },
+    {
+      "description": "⚠️ SHAI-HULUD: Block known compromised packages",
+      "matchPackageNames": [
+        "@postman/tunnel-agent",
+        "posthog-node",
+        "posthog-js",
+        "@posthog/agent",
+        "@asyncapi/specs",
+        "@asyncapi/openapi-schema-parser",
+        "@asyncapi/avro-schema-parser",
+        "@asyncapi/json-schema-parser",
+        "@asyncapi/raml-dt-schema-parser",
+        "zapier-sdk",
+        "zapier-platform-core",
+        "zapier-platform-cli",
+        "@zapier/zapier-sdk",
+        "@ensdomains/ensjs",
+        "@ensdomains/content-hash",
+        "@ensdomains/ens-validation",
+        "ethereum-ens",
+        "@postman/postman-mcp-cli",
+        "angulartics2",
+        "koa2-swagger-ui",
+        "tinycolor2",
+        "ngx-bootstrap"
+      ],
+      "enabled": true,
+      "prPriority": -100,
+      "automerge": false,
+      "dependencyDashboardApproval": true,
+      "prBodyNotes": [
+        "⚠️ **SECURITY WARNING**: This package was affected by the Shai-Hulud 2.0 supply chain attack (November 2025).",
+        "Before merging, verify:",
+        "- [ ] The version is from AFTER the malicious versions were removed",
+        "- [ ] Check [Datadog IOC list](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0) for affected versions",
+        "- [ ] Run `./scripts/detect.sh` from [dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud)"
+      ]
     }
   ]
 }
