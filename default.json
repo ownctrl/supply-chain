@@ -80,6 +80,12 @@
       "automergeType": "pr"
     },
     {
+      "description": "Other devDependencies: NO automerge (supply chain risk)",
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "Dev dependencies (review required)",
+      "automerge": false
+    },
+    {
       "description": "Dev tooling: Automerge ONLY for trusted packages",
       "matchDepTypes": ["devDependencies"],
       "matchPackagePatterns": [
@@ -100,26 +106,6 @@
       "separateMinorPatch": false,
       "automerge": true,
       "automergeType": "pr"
-    },
-    {
-      "description": "Other devDependencies: NO automerge (supply chain risk)",
-      "matchDepTypes": ["devDependencies"],
-      "excludePackagePatterns": [
-        "^@biomejs/",
-        "^oxlint$",
-        "^@oxc-project/",
-        "^@types/",
-        "^typescript$",
-        "^vitest",
-        "^@vitest/",
-        "^jest$",
-        "^@testing-library/",
-        "^prettier$",
-        "^eslint$",
-        "^@eslint/"
-      ],
-      "groupName": "Dev dependencies (review required)",
-      "automerge": false
     },
     {
       "description": "Production dependencies: NEVER automerge",
