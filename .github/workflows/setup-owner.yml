@@ -24,17 +24,21 @@ jobs:
         run: echo "owner=${GITHUB_REPOSITORY_OWNER}" >> $GITHUB_OUTPUT
 
       - name: Update Examples
+        env:
+          OWNER: ${{ steps.owner.outputs.owner }}
         run: |
           # Replace 'miccy' with the new owner in all json files in examples/
-          sed -i 's/miccy\//${{ steps.owner.outputs.owner }}\//g' examples/*.json
-          echo "Updated examples to use owner: ${{ steps.owner.outputs.owner }}"
+          sed -i "s/miccy\//${OWNER}\//g" examples/*.json
+          echo "Updated examples to use owner: ${OWNER}"
 
       - name: Update License
+        env:
+          OWNER: ${{ steps.owner.outputs.owner }}
         run: |
           YEAR=$(date +%Y)
           # Append new copyright notice
           echo "" >> LICENSE
-          echo "Copyright (c) $YEAR ${{ steps.owner.outputs.owner }}" >> LICENSE
+          echo "Copyright (c) $YEAR $OWNER" >> LICENSE
           echo "Updated LICENSE with new copyright."
 
       - name: Delete Setup Workflow
@@ -43,7 +47,9 @@ jobs:
           echo "Deleted setup workflow."
 
       - name: Commit and Push Changes
+        env:
+          OWNER: ${{ steps.owner.outputs.owner }}
         run: |
           git add examples/ LICENSE .github/workflows/setup-owner.yml
-          git commit -m "chore: setup repository owner (${{ steps.owner.outputs.owner }})"
+          git commit -m "chore: setup repository owner ($OWNER)"
           git push
