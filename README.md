@@ -226,12 +226,8 @@ This preset includes warnings for packages affected by the Shai-Hulud 2.0 attack
 - Checklist for verification
 - Links to IOC lists
 
-**Currently monitored packages:**
-- `@postman/tunnel-agent`, `posthog-node`, `posthog-js`, `@posthog/agent`
-- `@asyncapi/specs`, `@asyncapi/openapi-schema-parser`, `@asyncapi/avro-schema-parser`
-- `zapier-platform-core`, `zapier-platform-cli`, `@zapier/zapier-sdk`
-- `@ensdomains/ensjs`, `@ensdomains/content-hash`, `ethereum-ens`
-- `angulartics2`, `koa2-swagger-ui`, `tinycolor2`, `ngx-bootstrap`
+**Currently monitored packages (428 total):
+- Full list of 428 packages sourced from the Datadog IOC database.
 
 For the complete list, see [dont-be-shy-hulud IOC database](https://github.com/miccy/dont-be-shy-hulud/blob/main/ioc/malicious-packages.json).
 

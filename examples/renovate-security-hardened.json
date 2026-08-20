@@ -1,10 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "🛡️ Security-hardened: Extended stability period, no automerge for production deps, Shai-Hulud package warnings.",
-  "extends": [
-    "github>miccy/renovate-config"
-  ],
-  "stabilityDays": 7,
+  "extends": ["github>miccy/renovate-config"],
   "minimumReleaseAge": "7 days",
   "packageRules": [
     {
@@ -20,16 +17,16 @@
     {
       "description": "Trusted dev tools: Allow automerge",
       "matchDepTypes": ["devDependencies"],
-      "matchPackagePatterns": [
-        "^@biomejs/",
-        "^@types/",
-        "^typescript$",
-        "^vitest",
-        "^@vitest/",
-        "^prettier$",
-        "^eslint$"
-      ],
-      "automerge": true
+      "automerge": true,
+      "matchPackageNames": [
+        "/^@biomejs//",
+        "/^@types//",
+        "/^typescript$/",
+        "/^vitest/",
+        "/^@vitest//",
+        "/^prettier$/",
+        "/^eslint$/"
+      ]
     }
   ]
 }
