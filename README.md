@@ -43,10 +43,10 @@ A shared Renovate preset for organizations and personal repos. Security-first wi
 - Uses **Platform Automerge** (GitHub Native) for faster merging of approved PRs
 - Automerges only **trusted dev tooling** (Biome, Oxlint, TypeScript, Vitest, ESLint, Prettier)
 - Automatic **deduplication** for npm/pnpm/yarn lockfiles
-- Weekly **lock file maintenance** with automerge
+- Weekly **lock file maintenance**, review required (`minimumReleaseAge` does not gate lockfile refreshes)
 - **Semantic commits** enabled (`chore(deps): update package`)
 - **Vulnerability alerts** with security labels and transitive remediation
-- **Pins GitHub Actions** to digests for security
+- **Pins GitHub Actions** to digests; automerges minor/patch only, never a bare digest move
 - **Warnings on Shai-Hulud affected packages**
 - Supports **Bun, npm, pnpm, yarn, Nix, Terraform, Ansible, Docker, GitHub Actions**
 
@@ -116,7 +116,7 @@ Replace `ORG_OR_USER` with your org (e.g. `ownctrl`) or your username (`miccy`).
 | `automerge` (prod deps) | ❌ disabled | Security review required |
 | `automerge` (trusted dev) | ✅ enabled | Biome, TypeScript, Vitest, etc. |
 | `vulnerabilityAlerts` | ✅ enabled | With security labels |
-| `lockFileMaintenance` | ✅ weekly | With automerge |
+| `lockFileMaintenance` | ✅ weekly | Review required — the age gate does not apply here |
 
 ## Testing locally
 
