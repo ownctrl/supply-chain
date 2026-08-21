@@ -28,7 +28,7 @@
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 06:00 on monday"],
-    "automerge": true
+    "automerge": false
   },
   "packageRules": [
     {
@@ -67,8 +67,9 @@
       "automerge": false
     },
     {
-      "description": "GitHub Actions: Automerge (pinned digests are safe)",
+      "description": "GitHub Actions: Automerge minor/patch only, never major or a bare digest move",
       "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "CI: GitHub Actions",
       "separateMinorPatch": false,
       "automerge": true,
@@ -89,7 +90,7 @@
         "^@oxc-project/",
         "^@types/",
         "^typescript$",
-        "^vitest",
+        "^vitest$",
         "^@vitest/",
         "^jest$",
         "^@testing-library/",
@@ -103,36 +104,28 @@
       "automergeType": "pr"
     },
     {
-      "description": "Biome: Trusted, automerge",
+      "description": "Biome: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
       "matchPackagePatterns": ["^@biomejs/"],
       "groupName": "Biome",
-      "separateMinorPatch": false,
-      "automerge": true,
-      "automergeType": "pr"
+      "separateMinorPatch": false
     },
     {
-      "description": "Oxlint: Trusted, automerge",
+      "description": "Oxlint: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
       "matchPackagePatterns": ["^oxlint", "^@oxc-project/"],
       "groupName": "Oxlint",
-      "separateMinorPatch": false,
-      "automerge": true,
-      "automergeType": "pr"
+      "separateMinorPatch": false
     },
     {
-      "description": "TypeScript types: Trusted, automerge",
+      "description": "TypeScript types: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
       "matchPackagePatterns": ["^@types/", "^typescript$"],
       "groupName": "TypeScript",
-      "separateMinorPatch": false,
-      "automerge": true,
-      "automergeType": "pr"
+      "separateMinorPatch": false
     },
     {
-      "description": "Testing tools: Trusted, automerge",
+      "description": "Testing tools: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
       "matchPackagePatterns": ["^vitest", "^@vitest/", "^jest", "^@testing-library/"],
       "groupName": "Testing tools",
-      "separateMinorPatch": false,
-      "automerge": true,
-      "automergeType": "pr"
+      "separateMinorPatch": false
     },
     {
       "description": "Nix: Group together, high priority",
