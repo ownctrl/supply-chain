@@ -1,20 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "🔒 LOCKDOWN MODE: Maximum security during active supply chain attacks. No automerge, extended stability period, manual approval required.",
-  "extends": [
-    "github>miccy/renovate-config"
-  ],
+  "extends": ["github>miccy/renovate-config"],
   "schedule": ["before 06:00 on monday"],
-  "stabilityDays": 14,
   "minimumReleaseAge": "14 days",
   "prConcurrentLimit": 2,
   "dependencyDashboardApproval": true,
   "packageRules": [
     {
       "description": "LOCKDOWN: Disable ALL automerge",
-      "matchPackagePatterns": ["*"],
       "automerge": false,
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": true,
+      "matchPackageNames": ["*"]
     },
     {
       "description": "LOCKDOWN: Production deps require manual approval",
