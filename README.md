@@ -128,8 +128,7 @@ examples and LICENSE to the new owner when you dispatch it manually.
 
 | Setting | Value | Reason |
 |---------|-------|--------|
-| `stabilityDays` | 7 days | Supply chain protection |
-| `minimumReleaseAge` | 7 days | Avoid freshly published packages |
+| `minimumReleaseAge` | 7 days | Avoid freshly published packages (set as a packageRule for npm, which outranks the top-level value) |
 | `npm:unpublishSafe` | enabled | Avoid unpublished packages |
 | `rangeStrategy` | pin | Lock exact versions |
 | `prConcurrentLimit` | 4 | Avoid PR storms |

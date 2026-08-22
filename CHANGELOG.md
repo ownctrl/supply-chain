@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Security:** Expanded the Shai-Hulud 2.0 blocked packages list to include the complete set of 428 compromised packages sourced directly from the official [Datadog IOC database](https://github.com/DataDog/indicators-of-compromise).
+- **Security:** Expanded the Shai-Hulud 2.0 watch list to the complete set of 428 compromised packages, gated behind dashboard approval with automerge disabled (updates stay enabled so fixed versions can still land) sourced directly from the official [Datadog IOC database](https://github.com/DataDog/indicators-of-compromise).
 
 ### Changed
-- **Security:** Reordered `packageRules` in `default.json` to ensure the "Never automerge production dependencies" and the "SHAI-HULUD block" rules are evaluated last, correctly overriding any prior permissive rules (such as dev-tooling whitelists).
+- **Security:** Reordered `packageRules` in `default.json` to ensure the "Never automerge production dependencies" and the "SHAI-HULUD" gate rules are evaluated last, correctly overriding any prior permissive rules (such as dev-tooling whitelists).
 - **Code Health:** Upgraded Biome configuration to the latest schema using `biome migrate`.
 - **Code Health:** Formatted all JSON files in the repository to ensure consistency.
 

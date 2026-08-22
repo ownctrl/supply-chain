@@ -8,6 +8,11 @@
   "dependencyDashboardApproval": true,
   "packageRules": [
     {
+      "description": "LOCKDOWN: npm floor to 14 days -- must be a packageRule, the top-level value is outranked by the inherited npm rule",
+      "matchDatasources": ["npm"],
+      "minimumReleaseAge": "14 days"
+    },
+    {
       "description": "LOCKDOWN: Disable ALL automerge",
       "automerge": false,
       "dependencyDashboardApproval": true,

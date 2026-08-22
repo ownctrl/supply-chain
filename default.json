@@ -30,6 +30,11 @@
   },
   "packageRules": [
     {
+      "description": "Raise the npm floor back to this preset's 7 days. security:minimumReleaseAgeNpm sets 3 days via a packageRule, and a packageRule outranks the top-level minimumReleaseAge.",
+      "matchDatasources": ["npm"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
       "description": "npm/pnpm/yarn: Enable deduplication, pin dependencies",
       "matchManagers": ["npm", "pnpm", "yarn"],
       "postUpdateOptions": ["npmDedupe", "pnpmDedupe", "yarnDedupeFewer"],
@@ -102,24 +107,28 @@
     },
     {
       "description": "Biome: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
+      "matchDepTypes": ["devDependencies"],
       "matchPackageNames": ["/^@biomejs//"],
       "groupName": "Biome",
       "separateMinorPatch": false
     },
     {
       "description": "Oxlint: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
+      "matchDepTypes": ["devDependencies"],
       "matchPackageNames": ["/^oxlint/", "/^@oxc-project//"],
       "groupName": "Oxlint",
       "separateMinorPatch": false
     },
     {
       "description": "TypeScript types: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
+      "matchDepTypes": ["devDependencies"],
       "matchPackageNames": ["/^@types//", "/^typescript$/"],
       "groupName": "TypeScript",
       "separateMinorPatch": false
     },
     {
       "description": "Testing tools: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
+      "matchDepTypes": ["devDependencies"],
       "matchPackageNames": ["/^vitest/", "/^@vitest//", "/^jest/", "/^@testing-library//"],
       "groupName": "Testing tools",
       "separateMinorPatch": false
