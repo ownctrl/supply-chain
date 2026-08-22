@@ -91,8 +91,14 @@ Drop this file into a new repo and you are done:
 That is the whole setup. The preset carries the schedule, grouping, automerge
 policy and ecosystem coverage — there is nothing else to configure per repo.
 
-The one prerequisite is that the **Mend Renovate App** is installed for the
-account or org and has access to the repo.
+Two prerequisites, both one-time:
+
+1. The **Mend Renovate App** is installed for the account or org and has access
+   to the repo.
+2. **Allow auto-merge** is enabled in the repo's settings. This preset sets
+   `platformAutomerge`, which uses GitHub's native auto-merge. With the repo
+   setting off, Renovate silently falls back to merging through its own bot
+   instead — it still works, but not the way this preset describes.
 
 ### What to expect on a fresh repo
 
