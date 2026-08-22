@@ -3,7 +3,7 @@ title: "Váš robot na aktualizace závislostí je taky cesta dovnitř"
 perex: "Automatické aktualizace závislostí jsou dnes standard. Málokdo si přitom přečte, co přesně jeho konfigurace dovoluje sloučit bez lidského oka. Když jsme si to přečetli my, našli jsme čtyři díry — a tři z nich by nenašel nikdo, kdo jen následuje dokumentaci."
 tags: [supply-chain, renovate, bezpečnost, open-source]
 lang: cs
-draft: true
+draft: false
 ---
 
 ## Útok, který nepotřebuje vaši chybu
@@ -32,7 +32,7 @@ preset pro [Renovate](https://renovatebot.com), který tu odpověď zapisuje
 explicitně. Vezmete si ho jedním řádkem:
 
 ```json
-{ "extends": ["local>ownctrl/supply-chain"] }
+{ "extends": ["github>ownctrl/supply-chain"] }
 ```
 
 A to je celé nastavení. Žádný per-repo tuning.
@@ -140,12 +140,19 @@ Praktický zisk není „bezpečnost" jako abstraktní pocit. Je konkrétní:
 Do nového repozitáře stačí `renovate.json`:
 
 ```json
-{ "extends": ["local>ownctrl/supply-chain"] }
+{ "extends": ["github>ownctrl/supply-chain"] }
 ```
 
-Prefix `local>` je tu záměrně. Řekne Renovate, ať preset hledá na tom forge,
-kde zrovna běží — takže tentýž řádek funguje na GitHubu, GitLabu, Codebergu
-i na vlastním Forgejo, pokud je preset zrcadlený pod stejnou cestou.
+Pokud nechcete, aby se vám politika měnila pod rukama, připněte si vydání:
+
+```json
+{ "extends": ["github>ownctrl/supply-chain#v1.0.0"] }
+```
+
+Jedna věc, kterou je poctivé říct rovnou: **hostovanou Renovate aplikaci má
+jen GitHub.com.** Na GitLabu, Codebergu, Forgejo, Gitea i Bitbucketu si Renovate
+musíte spustit sami. Je to vlastnost Renovate ekosystému, ne tohoto presetu —
+narazíte na to s jakýmkoli presetem i bez něj.
 
 ### Když zrovna hoří
 
@@ -153,7 +160,7 @@ Při aktivním incidentu si přepněte do lockdownu. Nic se neslučuje samo,
 čtrnáctidenní odstup, všechno čeká na schválení:
 
 ```json
-{ "extends": ["local>ownctrl/supply-chain:lockdown"] }
+{ "extends": ["github>ownctrl/supply-chain:lockdown"] }
 ```
 
 ### Když nehoří a spěcháte
@@ -161,7 +168,7 @@ Při aktivním incidentu si přepněte do lockdownu. Nic se neslučuje samo,
 Pro nekritické projekty:
 
 ```json
-{ "extends": ["local>ownctrl/supply-chain:aggressive"] }
+{ "extends": ["github>ownctrl/supply-chain:aggressive"] }
 ```
 
 Žádný odstup, aktualizace kdykoli. Nepoužívejte to, když si nejste jistí, že
@@ -175,7 +182,7 @@ to taky napsat jako `packageRule`:
 
 ```json
 {
-  "extends": ["local>ownctrl/supply-chain"],
+  "extends": ["github>ownctrl/supply-chain"],
   "packageRules": [
     { "matchDatasources": ["npm"], "minimumReleaseAge": "14 days" }
   ]
@@ -192,19 +199,13 @@ Dědění je levnější:
 
 ```json
 {
-  "extends": ["local>ownctrl/supply-chain"],
+  "extends": ["github>ownctrl/supply-chain"],
   "labels": ["dependencies", "vaše-značka"]
 }
 ```
 
 Fork znamená opravit každou bezpečnostní vadu tolikrát, kolik máte kopií.
 Ty čtyři výše bychom opravovali čtyřikrát.
-
-Pokud nechcete, aby se vám politika měnila pod rukama, připněte si vydání:
-
-```json
-{ "extends": ["local>ownctrl/supply-chain#v1.0"] }
-```
 
 ## Co si z toho odnést, i když náš preset nepoužijete
 
