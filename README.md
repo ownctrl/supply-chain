@@ -43,10 +43,10 @@ A shared Renovate preset for organizations and personal repos. Security-first wi
 - Uses **Platform Automerge** (GitHub Native) for faster merging of approved PRs
 - Automerges only **trusted dev tooling** (Biome, Oxlint, TypeScript, Vitest, ESLint, Prettier)
 - Automatic **deduplication** for npm/pnpm/yarn lockfiles
-- Weekly **lock file maintenance** with automerge
+- Weekly **lock file maintenance**, review required (`minimumReleaseAge` does not gate lockfile refreshes)
 - **Semantic commits** enabled (`chore(deps): update package`)
-- **Vulnerability alerts** with security labels and transitive remediation
-- **Pins GitHub Actions** to digests for security
+- **Vulnerability alerts** with security labels
+- **Pins GitHub Actions** to digests; automerges minor/patch only, never a bare digest move
 - **Warnings on Shai-Hulud affected packages**
 - Supports **Bun, npm, pnpm, yarn, Nix, Terraform, Ansible, Docker, GitHub Actions**
 
@@ -68,16 +68,38 @@ A shared Renovate preset for organizations and personal repos. Security-first wi
 
 ## How to use
 
-1. Create a repository named **`renovate-config`** in your org (or personal account) and push this content.
-2. In each target repository, add a minimal `renovate.json`:
+Drop this file into a new repo and you are done:
 
 ```json
-{ "extends": ["github>ORG_OR_USER/renovate-config"] }
+{ "extends": ["github>miccy/renovate-config"] }
 ```
 
-Replace `ORG_OR_USER` with your org (e.g. `ownctrl`) or your username (`miccy`).
+That is the whole setup. The preset carries the schedule, grouping, automerge
+policy and ecosystem coverage — there is nothing else to configure per repo.
 
-3. Install the **Mend Renovate App** for the org and select **All repositories**.
+The one prerequisite is that the **Mend Renovate App** is installed for the
+account or org and has access to the repo.
+
+### What to expect on a fresh repo
+
+- **Nothing happens until Monday.** The schedule is `before 06:00 on monday`
+  (Europe/Prague). This is not a misconfiguration — set `"schedule": ["at any
+  time"]` in your repo if you want the first run immediately.
+- **The Dependency Dashboard issue is the control surface.** Majors and
+  known-compromised packages wait there for a click.
+- **What automerges on its own:** trusted dev tooling (Biome, Oxlint,
+  TypeScript, Vitest, Jest, ESLint, Prettier and their scopes) and minor/patch
+  GitHub Action bumps. Everything else opens a PR and waits for you.
+
+That last point is the deliberate trade-off: production dependencies, lockfile
+refreshes and bare digest moves are the paths a supply-chain attack travels, so
+they are review-gated by design. Expect a handful of clicks a week, not zero.
+
+### Using it under your own account
+
+Fork or copy this repo, then reference your own copy
+(`github>ORG_OR_USER/renovate-config`). The `Setup Owner` workflow rewrites the
+examples and LICENSE to the new owner when you dispatch it manually.
 
 ### Bun & Biome & Oxlint
 
@@ -106,8 +128,7 @@ Replace `ORG_OR_USER` with your org (e.g. `ownctrl`) or your username (`miccy`).
 
 | Setting | Value | Reason |
 |---------|-------|--------|
-| `stabilityDays` | 7 days | Supply chain protection |
-| `minimumReleaseAge` | 7 days | Avoid freshly published packages |
+| `minimumReleaseAge` | 7 days | Avoid freshly published packages (set as a packageRule for npm, which outranks the top-level value) |
 | `npm:unpublishSafe` | enabled | Avoid unpublished packages |
 | `rangeStrategy` | pin | Lock exact versions |
 | `prConcurrentLimit` | 4 | Avoid PR storms |
@@ -116,7 +137,7 @@ Replace `ORG_OR_USER` with your org (e.g. `ownctrl`) or your username (`miccy`).
 | `automerge` (prod deps) | ❌ disabled | Security review required |
 | `automerge` (trusted dev) | ✅ enabled | Biome, TypeScript, Vitest, etc. |
 | `vulnerabilityAlerts` | ✅ enabled | With security labels |
-| `lockFileMaintenance` | ✅ weekly | With automerge |
+| `lockFileMaintenance` | ✅ weekly | Review required — the age gate does not apply here |
 
 ## Testing locally
 
@@ -226,12 +247,9 @@ This preset includes warnings for packages affected by the Shai-Hulud 2.0 attack
 - Checklist for verification
 - Links to IOC lists
 
-**Currently monitored packages:**
-- `@postman/tunnel-agent`, `posthog-node`, `posthog-js`, `@posthog/agent`
-- `@asyncapi/specs`, `@asyncapi/openapi-schema-parser`, `@asyncapi/avro-schema-parser`
-- `zapier-platform-core`, `zapier-platform-cli`, `@zapier/zapier-sdk`
-- `@ensdomains/ensjs`, `@ensdomains/content-hash`, `ethereum-ens`
-- `angulartics2`, `koa2-swagger-ui`, `tinycolor2`, `ngx-bootstrap`
+**Currently monitored packages: 428**
+
+Sourced from the Datadog IOC database. These are gated behind dashboard approval with a warning attached — not blocked, so fixed versions can still land.
 
 For the complete list, see [dont-be-shy-hulud IOC database](https://github.com/miccy/dont-be-shy-hulud/blob/main/ioc/malicious-packages.json).
 
