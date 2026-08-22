@@ -33,10 +33,11 @@ jobs:
           node-version: 22
 
       # Pinned so CI does not silently execute whatever renovate publishes next.
-      - name: Validate default preset and examples
+      - name: Validate all presets
         env:
           # renovate: datasource=npm depName=renovate
           RENOVATE_VERSION: 44.39.1
         run: |
           npx --yes --package "renovate@${RENOVATE_VERSION}" -- \
-            renovate-config-validator --strict default.json renovate.json examples/*.json
+            renovate-config-validator --strict default.json renovate.json \
+              lockdown.json aggressive.json no-automerge.json

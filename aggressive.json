@@ -1,14 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Example: More aggressive updates",
-  "extends": ["local>ownctrl/supply-chain"],
-  "schedule": ["at any time"],
+  "description": "Low-friction: updates any time, no release-age floor, higher PR limit. Not for use during an active supply-chain incident.",
+  "extends": [
+    "local>ownctrl/supply-chain"
+  ],
+  "schedule": [
+    "at any time"
+  ],
   "prConcurrentLimit": 10,
   "minimumReleaseAge": null,
   "packageRules": [
     {
       "description": "Top-level minimumReleaseAge cannot lift the inherited npm rule -- a packageRule outranks it, so drop the floor here too",
-      "matchDatasources": ["npm"],
+      "matchDatasources": [
+        "npm"
+      ],
       "minimumReleaseAge": null
     }
   ]

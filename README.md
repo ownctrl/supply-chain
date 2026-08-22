@@ -208,72 +208,25 @@ LOG_LEVEL=debug renovate --platform=local --dry-run=true
 npx renovate --platform=local --dry-run=true
 ```
 
-## Common overrides
+## Presets
 
-See practical examples in [`examples/`](./examples/) directory.
+Each of these is a ready preset, not a snippet to copy. Reference it directly:
 
-### 🔒 Lockdown Mode (Active Threats)
+| Preset | Reference | What it changes |
+| --- | --- | --- |
+| base | `local>ownctrl/supply-chain` | the policy described above |
+| lockdown | `local>ownctrl/supply-chain:lockdown` | nothing automerges, 14-day npm floor, every update waits for dashboard approval |
+| no-automerge | `local>ownctrl/supply-chain:no-automerge` | automerge off, everything else unchanged |
+| aggressive | `local>ownctrl/supply-chain:aggressive` | any time, no release-age floor, higher PR limit |
 
-For maximum security during active supply chain attacks ([example](./examples/renovate-lockdown.json)):
-
-```json
-{
-  "extends": ["local>ownctrl/supply-chain"],
-  "prConcurrentLimit": 2,
-  "dependencyDashboardApproval": true,
-  "packageRules": [
-    { "matchDatasources": ["npm"], "minimumReleaseAge": "14 days" },
-    { "matchPackageNames": ["*"], "automerge": false }
-  ]
-}
-```
-
-### 🛡️ Security-Hardened (Recommended)
-
-Balanced security without too much friction ([example](./examples/renovate-security-hardened.json)):
+Reach for **lockdown** during an active supply-chain incident and **aggressive**
+only when you are certain there is not one.
 
 ```json
-{
-  "extends": ["local>ownctrl/supply-chain"],
-  "packageRules": [
-    { "matchDepTypes": ["dependencies"], "automerge": false }
-  ]
-}
+{ "extends": ["local>ownctrl/supply-chain:lockdown"] }
 ```
 
-### More aggressive updates
-
-For non-critical projects where you want faster updates ([example](./examples/renovate-aggressive.json)):
-
-```json
-{
-  "extends": ["local>ownctrl/supply-chain"],
-  "schedule": ["at any time"],
-  "prConcurrentLimit": 10,
-  "minimumReleaseAge": null,
-  "packageRules": [
-    { "matchDatasources": ["npm"], "minimumReleaseAge": null }
-  ]
-}
-```
-
-⚠️ **Warning**: Not recommended during active supply chain threats!
-
-### Disable automerge completely
-
-For critical projects requiring manual review ([example](./examples/renovate-no-automerge.json)):
-
-```json
-{
-  "extends": ["local>ownctrl/supply-chain"],
-  "packageRules": [
-    {
-      "matchPackageNames": ["*"],
-      "automerge": false
-    }
-  ]
-}
-```
+Sub-presets extend the base themselves, so you do not list both.
 
 ### Custom timezone
 
