@@ -2,7 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "This repo eats its own dog food: it consumes the preset it publishes. Without this, the action digests and the pinned renovate version in .github/workflows/ would rot, and a stale pin is worse than a floating tag.",
   "extends": [
-    "local>ownctrl/supply-chain",
-    "customManagers:githubActionsVersions"
+    "local>ownctrl/supply-chain"
+  ],
+  "customManagers": [
+    {
+      "description": "Keep the validator pin in tooling/validate.sh updated",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^tooling/validate\\.sh$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+RENOVATE_VERSION=\"\\$\\{RENOVATE_VERSION:-(?<currentValue>[^}\"]+)\\}\""
+      ]
+    }
   ]
 }

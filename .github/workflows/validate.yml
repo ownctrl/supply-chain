@@ -32,12 +32,7 @@ jobs:
         with:
           node-version: 22
 
-      # Pinned so CI does not silently execute whatever renovate publishes next.
+      # The pinned renovate version lives in the script, so CI and a local run
+      # cannot drift. renovate.json keeps that pin updated.
       - name: Validate all presets
-        env:
-          # renovate: datasource=npm depName=renovate
-          RENOVATE_VERSION: 44.39.1
-        run: |
-          npx --yes --package "renovate@${RENOVATE_VERSION}" -- \
-            renovate-config-validator --strict default.json renovate.json \
-              lockdown.json aggressive.json no-automerge.json
+        run: ./tooling/validate.sh
