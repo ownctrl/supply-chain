@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Disable automerge entirely, keeping every other policy from the base preset.",
+  "extends": [
+    "local>ownctrl/supply-chain"
+  ],
+  "packageRules": [
+    {
+      "automerge": false,
+      "matchPackageNames": [
+        "*"
+      ]
+    }
+  ]
+}

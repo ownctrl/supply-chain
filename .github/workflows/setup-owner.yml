@@ -28,9 +28,9 @@ jobs:
         env:
           OWNER: ${{ steps.owner.outputs.owner }}
         run: |
-          # Point the examples at the new owner's copy of this repo.
-          sed -i "s|ownctrl/supply-chain|${OWNER}/supply-chain|g" examples/*.json
-          echo "Updated examples to use owner: ${OWNER}"
+          # Point the presets at the new owner's copy of this repo.
+          sed -i "s|ownctrl/supply-chain|${OWNER}/supply-chain|g" ./*.json
+          echo "Updated presets to use owner: ${OWNER}"
 
       - name: Update License
         env:
@@ -51,6 +51,6 @@ jobs:
         env:
           OWNER: ${{ steps.owner.outputs.owner }}
         run: |
-          git add examples/ LICENSE .github/workflows/setup-owner.yml
+          git add ./*.json LICENSE .github/workflows/setup-owner.yml
           git commit -m "chore: setup repository owner ($OWNER)"
           git push

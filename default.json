@@ -50,19 +50,7 @@
       "pinDigests": true
     },
     {
-      "description": "Group all non-major updates together",
-      "matchManagers": [
-        "npm",
-        "bun",
-        "bun-version",
-        "deno",
-        "cargo",
-        "docker",
-        "github-actions",
-        "nix",
-        "terraform",
-        "ansible"
-      ],
+      "description": "Group all non-major updates together, in every ecosystem. Per-language rules below split specific ones back out.",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "all non-major updates"
     },
@@ -142,6 +130,60 @@
       "description": "Deno: Group together (npm, jsr and deno datasources)",
       "matchManagers": ["deno"],
       "groupName": "Deno",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "Go: group together",
+      "matchManagers": ["gomod"],
+      "groupName": "Go",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "Python: group together",
+      "matchManagers": ["pip_requirements", "pip-compile", "poetry", "pep621", "pipenv", "setup-cfg"],
+      "groupName": "Python",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "JVM: group together",
+      "matchManagers": ["gradle", "gradle-wrapper", "maven", "maven-wrapper", "sbt"],
+      "groupName": "JVM",
+      "separateMinorPatch": false
+    },
+    {
+      "description": ".NET: group together",
+      "matchManagers": ["nuget"],
+      "groupName": ".NET",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "PHP: group together",
+      "matchManagers": ["composer"],
+      "groupName": "PHP",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "Ruby: group together",
+      "matchManagers": ["bundler"],
+      "groupName": "Ruby",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "Dart: group together",
+      "matchManagers": ["pub"],
+      "groupName": "Dart",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "Swift: group together",
+      "matchManagers": ["swift", "cocoapods"],
+      "groupName": "Swift",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "Kubernetes: group together",
+      "matchManagers": ["kubernetes", "helmv3", "helm-values", "helm-requirements", "helmfile", "flux", "argocd"],
+      "groupName": "Kubernetes",
       "separateMinorPatch": false
     },
     {
