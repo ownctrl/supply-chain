@@ -56,7 +56,7 @@ A shared Renovate preset for organizations and personal repos. Security-first wi
 
 | Category            | Technologies                         |
 | ------------------- | ------------------------------------ |
-| **JavaScript/Node** | npm • pnpm • yarn • Bun              |
+| **JavaScript/Node** | npm • pnpm • yarn • Bun • Deno       |
 | **System & Infra**  | Nix • Terraform • Ansible            |
 | **Containers**      | Docker                               |
 | **CI/CD**           | GitHub Actions                       |
@@ -101,9 +101,25 @@ Fork or copy this repo, then reference your own copy
 (`github>ORG_OR_USER/renovate-config`). The `Setup Owner` workflow rewrites the
 examples and LICENSE to the new owner when you dispatch it manually.
 
-### Bun & Biome & Oxlint
+### JavaScript runtimes and package managers
 
-- **Bun** is handled via Renovate's `bun` manager. Commit `bun.lock` (or `bun.lockb`) for reliable updates.
+Renovate has three managers here, and the split is not the one you would guess:
+
+- **`npm`** covers npm, pnpm **and** yarn. There is no separate `pnpm` or
+  `yarn` manager — all three are the same manager reading different lockfiles.
+- **`bun`** is its own manager (`bun.lock`, `bun.lockb`). Commit the lockfile.
+- **`deno`** is its own manager (`deno.json`, `deno.jsonc`, `deno.lock`) and
+  pulls from the npm, jsr and deno datasources.
+
+`.bun-version` is picked up by the `bun-version` manager.
+
+**Nub** needs nothing special. It reads and writes whichever lockfile the
+project already has (`package-lock.json`, `pnpm-lock.yaml`, `bun.lock`), so
+Renovate keeps using the matching manager and nub reads the result. Note that
+lockfile refreshes are performed by the incumbent package manager, not by nub.
+
+### Biome & Oxlint
+
 - **Biome** (`@biomejs/*`) is treated as trusted dev tooling and grouped + automerged on non-major updates.
 - **Oxlint** (`oxlint`, `@oxc-project/*`) follows the same pattern as Biome.
 
@@ -130,7 +146,7 @@ examples and LICENSE to the new owner when you dispatch it manually.
 |---------|-------|--------|
 | `minimumReleaseAge` | 7 days | Avoid freshly published packages (set as a packageRule for npm, which outranks the top-level value) |
 | `npm:unpublishSafe` | enabled | Avoid unpublished packages |
-| `rangeStrategy` | pin | Lock exact versions |
+| `rangeStrategy` | pin | Lock exact versions (npm, bun, deno) |
 | `prConcurrentLimit` | 4 | Avoid PR storms |
 | `schedule` | Mondays 06:00 | Weekly updates |
 | `timezone` | Europe/Prague | Local timezone |

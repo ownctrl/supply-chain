@@ -35,10 +35,14 @@
       "minimumReleaseAge": "7 days"
     },
     {
-      "description": "npm/pnpm/yarn: Enable deduplication, pin dependencies",
-      "matchManagers": ["npm", "pnpm", "yarn"],
-      "postUpdateOptions": ["npmDedupe", "pnpmDedupe", "yarnDedupeFewer"],
+      "description": "JS ecosystems: pin exact versions. npm covers npm/pnpm/yarn lockfiles; bun and deno are separate managers.",
+      "matchManagers": ["npm", "bun", "deno"],
       "rangeStrategy": "pin"
+    },
+    {
+      "description": "Deduplicate lockfiles. Only the npm manager supports these; bun and deno have no equivalent postUpdateOption.",
+      "matchManagers": ["npm"],
+      "postUpdateOptions": ["npmDedupe", "pnpmDedupe", "yarnDedupeFewer"]
     },
     {
       "description": "GitHub Actions: Pin to digests for security",
@@ -50,8 +54,8 @@
       "matchManagers": [
         "npm",
         "bun",
-        "pnpm",
-        "yarn",
+        "bun-version",
+        "deno",
         "docker",
         "github-actions",
         "nix",
@@ -131,6 +135,12 @@
       "matchDepTypes": ["devDependencies"],
       "matchPackageNames": ["/^vitest/", "/^@vitest//", "/^jest/", "/^@testing-library//"],
       "groupName": "Testing tools",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "Deno: Group together (npm, jsr and deno datasources)",
+      "matchManagers": ["deno"],
+      "groupName": "Deno",
       "separateMinorPatch": false
     },
     {
