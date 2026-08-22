@@ -68,16 +68,38 @@ A shared Renovate preset for organizations and personal repos. Security-first wi
 
 ## How to use
 
-1. Create a repository named **`renovate-config`** in your org (or personal account) and push this content.
-2. In each target repository, add a minimal `renovate.json`:
+Drop this file into a new repo and you are done:
 
 ```json
-{ "extends": ["github>ORG_OR_USER/renovate-config"] }
+{ "extends": ["github>miccy/renovate-config"] }
 ```
 
-Replace `ORG_OR_USER` with your org (e.g. `ownctrl`) or your username (`miccy`).
+That is the whole setup. The preset carries the schedule, grouping, automerge
+policy and ecosystem coverage — there is nothing else to configure per repo.
 
-3. Install the **Mend Renovate App** for the org and select **All repositories**.
+The one prerequisite is that the **Mend Renovate App** is installed for the
+account or org and has access to the repo.
+
+### What to expect on a fresh repo
+
+- **Nothing happens until Monday.** The schedule is `before 06:00 on monday`
+  (Europe/Prague). This is not a misconfiguration — set `"schedule": ["at any
+  time"]` in your repo if you want the first run immediately.
+- **The Dependency Dashboard issue is the control surface.** Majors and
+  known-compromised packages wait there for a click.
+- **What automerges on its own:** trusted dev tooling (Biome, Oxlint,
+  TypeScript, Vitest, Jest, ESLint, Prettier and their scopes) and minor/patch
+  GitHub Action bumps. Everything else opens a PR and waits for you.
+
+That last point is the deliberate trade-off: production dependencies, lockfile
+refreshes and bare digest moves are the paths a supply-chain attack travels, so
+they are review-gated by design. Expect a handful of clicks a week, not zero.
+
+### Using it under your own account
+
+Fork or copy this repo, then reference your own copy
+(`github>ORG_OR_USER/renovate-config`). The `Setup Owner` workflow rewrites the
+examples and LICENSE to the new owner when you dispatch it manually.
 
 ### Bun & Biome & Oxlint
 
@@ -226,8 +248,9 @@ This preset includes warnings for packages affected by the Shai-Hulud 2.0 attack
 - Checklist for verification
 - Links to IOC lists
 
-**Currently monitored packages (428 total):
-- Full list of 428 packages sourced from the Datadog IOC database.
+**Currently monitored packages: 428**
+
+Sourced from the Datadog IOC database. These are gated behind dashboard approval with a warning attached — not blocked, so fixed versions can still land.
 
 For the complete list, see [dont-be-shy-hulud IOC database](https://github.com/miccy/dont-be-shy-hulud/blob/main/ioc/malicious-packages.json).
 

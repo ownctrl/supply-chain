@@ -35,4 +35,4 @@ jobs:
           RENOVATE_VERSION: 44.39.1
         run: |
           npx --yes --package "renovate@${RENOVATE_VERSION}" -- \
-            renovate-config-validator --strict default.json examples/*.json
+            renovate-config-validator --strict default.json renovate.json examples/*.json
