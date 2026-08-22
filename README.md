@@ -93,12 +93,30 @@ policy and ecosystem coverage — there is nothing else to configure per repo.
 
 Two prerequisites, both one-time:
 
-1. The **Mend Renovate App** is installed for the account or org and has access
-   to the repo.
+1. **Renovate reaches the repo.** On GitHub.com that is the Mend Renovate App,
+   installed for the account or org. On every other forge you run Renovate
+   yourself — see below.
 2. **Allow auto-merge** is enabled in the repo's settings. This preset sets
    `platformAutomerge`, which uses GitHub's native auto-merge. With the repo
    setting off, Renovate silently falls back to merging through its own bot
    instead — it still works, but not the way this preset describes.
+
+### Where Renovate runs
+
+The preset is only JSON; it works wherever Renovate does. Getting Renovate to
+run is the part that differs, and only GitHub.com is free of setup:
+
+| Forge | How Renovate runs |
+| --- | --- |
+| GitHub.com | Mend Renovate App — hosted, free, nothing to run |
+| GitLab | self-hosted; the [`renovate-runner`](https://gitlab.com/renovate-bot/renovate-runner) CI template runs it as a scheduled pipeline |
+| Codeberg / Forgejo / Gitea | self-hosted; run the Renovate CLI on a schedule |
+| Bitbucket | self-hosted |
+
+This is a property of the Renovate ecosystem, not of this preset — you would
+face it with any preset, or with none. Mirroring this repo to another forge is
+about making `local>ownctrl/supply-chain` resolvable there; nothing runs on
+the mirror itself.
 
 ### What to expect on a fresh repo
 
