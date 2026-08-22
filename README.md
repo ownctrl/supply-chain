@@ -199,6 +199,22 @@ lockfile refreshes are performed by the incumbent package manager, not by nub.
 | `vulnerabilityAlerts` | ✅ enabled | With security labels |
 | `lockFileMaintenance` | ✅ weekly | Review required — the age gate does not apply here |
 
+## Validating locally
+
+```bash
+./tooling/validate.sh
+```
+
+Same list of presets CI checks. Wire it up as a pre-push hook if you want it to
+run on its own:
+
+```bash
+ln -s ../../tooling/validate.sh .git/hooks/pre-push
+```
+
+A local hook is a convenience, not a boundary — anyone can skip it. CI stays the
+real gate.
+
 ## Testing locally
 
 You can test this config locally before deploying:
