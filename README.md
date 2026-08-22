@@ -45,7 +45,7 @@ A shared Renovate preset for organizations and personal repos. Security-first wi
 - Automatic **deduplication** for npm/pnpm/yarn lockfiles
 - Weekly **lock file maintenance**, review required (`minimumReleaseAge` does not gate lockfile refreshes)
 - **Semantic commits** enabled (`chore(deps): update package`)
-- **Vulnerability alerts** with security labels and transitive remediation
+- **Vulnerability alerts** with security labels
 - **Pins GitHub Actions** to digests; automerges minor/patch only, never a bare digest move
 - **Warnings on Shai-Hulud affected packages**
 - Supports **Bun, npm, pnpm, yarn, Nix, Terraform, Ansible, Docker, GitHub Actions**

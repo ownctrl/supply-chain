@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Shared Renovate preset: Security-hardened for supply chain protection. Multi-ecosystem support (JS/Bun, Nix, Terraform, Ansible, Docker, GitHub Actions). Increased stabilityDays, unpublishSafe, careful automerge.",
-  "extends": ["config:recommended", "npm:unpublishSafe"],
+  "description": "Shared Renovate preset: Security-hardened for supply chain protection. Multi-ecosystem support (JS/Bun, Nix, Terraform, Ansible, Docker, GitHub Actions). Increased minimumReleaseAge, careful automerge.",
+  "extends": ["config:recommended", "security:minimumReleaseAgeNpm"],
   "platformAutomerge": true,
   "ignoreTests": false,
   "timezone": "Europe/Prague",
@@ -12,7 +12,6 @@
   "commitMessagePrefix": "chore(deps):",
   "commitMessageAction": "update",
   "commitMessageTopic": "{{depName}}",
-  "stabilityDays": 7,
   "minimumReleaseAge": "7 days",
   "prConcurrentLimit": 4,
   "prHourlyLimit": 0,
@@ -22,8 +21,7 @@
   "vulnerabilityAlerts": {
     "enabled": true,
     "labels": ["security", "priority:high"],
-    "assignAutomerge": false,
-    "transitiveRemediation": true
+    "assignAutomerge": false
   },
   "lockFileMaintenance": {
     "enabled": true,
@@ -71,7 +69,6 @@
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "CI: GitHub Actions",
-      "separateMinorPatch": false,
       "automerge": true,
       "automergeType": "pr"
     },
@@ -84,19 +81,19 @@
     {
       "description": "Dev tooling: Automerge ONLY for trusted packages",
       "matchDepTypes": ["devDependencies"],
-      "matchPackagePatterns": [
-        "^@biomejs/",
-        "^oxlint$",
-        "^@oxc-project/",
-        "^@types/",
-        "^typescript$",
-        "^vitest$",
-        "^@vitest/",
-        "^jest$",
-        "^@testing-library/",
-        "^prettier$",
-        "^eslint$",
-        "^@eslint/"
+      "matchPackageNames": [
+        "/^@biomejs//",
+        "/^oxlint$/",
+        "/^@oxc-project//",
+        "/^@types//",
+        "/^typescript$/",
+        "/^vitest$/",
+        "/^@vitest//",
+        "/^jest$/",
+        "/^@testing-library//",
+        "/^prettier$/",
+        "/^eslint$/",
+        "/^@eslint//"
       ],
       "groupName": "Dev tooling (trusted)",
       "separateMinorPatch": false,
@@ -105,25 +102,25 @@
     },
     {
       "description": "Biome: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
-      "matchPackagePatterns": ["^@biomejs/"],
+      "matchPackageNames": ["/^@biomejs//"],
       "groupName": "Biome",
       "separateMinorPatch": false
     },
     {
       "description": "Oxlint: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
-      "matchPackagePatterns": ["^oxlint", "^@oxc-project/"],
+      "matchPackageNames": ["/^oxlint/", "/^@oxc-project//"],
       "groupName": "Oxlint",
       "separateMinorPatch": false
     },
     {
       "description": "TypeScript types: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
-      "matchPackagePatterns": ["^@types/", "^typescript$"],
+      "matchPackageNames": ["/^@types//", "/^typescript$/"],
       "groupName": "TypeScript",
       "separateMinorPatch": false
     },
     {
       "description": "Testing tools: Grouping only -- automerge is granted solely by the trusted dev tooling rule above",
-      "matchPackagePatterns": ["^vitest", "^@vitest/", "^jest", "^@testing-library/"],
+      "matchPackageNames": ["/^vitest/", "/^@vitest//", "/^jest/", "/^@testing-library//"],
       "groupName": "Testing tools",
       "separateMinorPatch": false
     },
