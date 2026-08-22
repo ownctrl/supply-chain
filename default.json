@@ -56,6 +56,7 @@
         "bun",
         "bun-version",
         "deno",
+        "cargo",
         "docker",
         "github-actions",
         "nix",
@@ -141,6 +142,12 @@
       "description": "Deno: Group together (npm, jsr and deno datasources)",
       "matchManagers": ["deno"],
       "groupName": "Deno",
+      "separateMinorPatch": false
+    },
+    {
+      "description": "Rust: Group cargo crates together",
+      "matchManagers": ["cargo"],
+      "groupName": "Rust",
       "separateMinorPatch": false
     },
     {

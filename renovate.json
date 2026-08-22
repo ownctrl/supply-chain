@@ -2,7 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "This repo eats its own dog food: it consumes the preset it publishes. Without this, the action digests and the pinned renovate version in .github/workflows/ would rot, and a stale pin is worse than a floating tag.",
   "extends": [
-    "local>miccy/renovate-config",
+    "local>ownctrl/supply-chain",
     "customManagers:githubActionsVersions"
   ]
 }

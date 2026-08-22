@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "🔒 LOCKDOWN MODE: Maximum security during active supply chain attacks. No automerge, extended stability period, manual approval required.",
-  "extends": ["github>miccy/renovate-config"],
+  "extends": ["local>ownctrl/supply-chain"],
   "schedule": ["before 06:00 on monday"],
   "minimumReleaseAge": "14 days",
   "prConcurrentLimit": 2,

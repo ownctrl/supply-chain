@@ -28,8 +28,8 @@ jobs:
         env:
           OWNER: ${{ steps.owner.outputs.owner }}
         run: |
-          # Replace 'miccy' with the new owner in all json files in examples/
-          sed -i "s/miccy\//${OWNER}\//g" examples/*.json
+          # Point the examples at the new owner's copy of this repo.
+          sed -i "s|ownctrl/supply-chain|${OWNER}/supply-chain|g" examples/*.json
           echo "Updated examples to use owner: ${OWNER}"
 
       - name: Update License

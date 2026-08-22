@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Example: More aggressive updates",
-  "extends": ["github>miccy/renovate-config"],
+  "extends": ["local>ownctrl/supply-chain"],
   "schedule": ["at any time"],
   "prConcurrentLimit": 10,
   "minimumReleaseAge": null,
