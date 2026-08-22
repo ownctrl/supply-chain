@@ -1,54 +1,67 @@
-# renovate-config
+# supply-chain
 
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
-![Ecosystems](https://img.shields.io/badge/ecosystems-9+-blue.svg)
-[![GitHub stars](https://img.shields.io/github/stars/miccy/renovate-config?style=social)](https://github.com/miccy/renovate-config)
+![Ecosystems](https://img.shields.io/badge/ecosystems-10+-blue.svg)
 
-**🤖 Production-ready shared Renovate preset for automated dependency management**
+**Shared supply-chain policy for dependency updates**
 
-_Multi-ecosystem • Security-hardened • Smart grouping • Supply chain protection_
+_Multi-ecosystem • Multi-forge • Review-gated by default_
 
 </div>
 
 ---
 
-## ⚠️ Security Notice: Shai-Hulud 2.0
+## What this is
 
-> **This preset has been hardened in response to the Shai-Hulud 2.0 npm supply chain attack (November 2025).**
+A Renovate preset that encodes one decision: **which dependency updates are
+allowed to land without a human looking at them, and which are not.**
 
-Key security measures included:
-- 🛡️ **7-day stability period** before updates are proposed
-- 🔒 **No automerge for production dependencies**
-- ⚠️ **Warnings on known compromised packages**
-- 📋 **Dashboard approval required for majors**
-- 🔗 **`npm:unpublishSafe`** preset to avoid unpublished packages
+The answer is deliberately narrow. Trusted dev tooling and minor/patch CI
+action bumps automerge. Production dependencies, lockfile refreshes and bare
+digest moves do not — those are the paths a supply-chain attack travels.
 
-For more information, see [dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud).
+It is not a JavaScript config. It covers Rust, Nix, Terraform, Ansible, Docker
+and CI actions alongside the JS ecosystems, because the threat model does not
+care what language you write.
 
----
+### Why it exists
+
+The Shai-Hulud 2.0 npm attack in November 2025 is the origin story, not the
+scope. It prompted the first version and the 428-package watch list, but the
+policy here is general: assume any dependency can turn hostile between one
+release and the next, and make the blast radius a review instead of a merge.
+
+The watch list still ships, gated behind dashboard approval. See
+[dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud) for detection
+and remediation.
 
 ## Shared preset
 
 ### 🎯 Features
 
-A shared Renovate preset for organizations and personal repos. Security-first with smart defaults:
-
-- **7-day `stabilityDays`** and `minimumReleaseAge` for supply chain protection
+- **7-day `minimumReleaseAge`**, set as a packageRule for npm so it actually
+  applies — a top-level value is outranked by the inherited npm rule
+- **`security:minimumReleaseAgeNpm`** — avoids freshly published and
+  unpublished packages
 - **No automerge for production deps** — only trusted dev tooling automerges
-- **`npm:unpublishSafe`** preset — avoids packages that might be unpublished
 - Groups **all non-major** updates into one PR, majors stay separate
 - Uses **Platform Automerge** (GitHub Native) for faster merging of approved PRs
-- Automerges only **trusted dev tooling** (Biome, Oxlint, TypeScript, Vitest, ESLint, Prettier)
+- Automerges only **trusted dev tooling** (Biome, Oxlint, TypeScript, Vitest,
+  Jest, ESLint, Prettier), matched on anchored names so neighbouring packages
+  in unowned npm prefixes cannot inherit the trust
 - Automatic **deduplication** for npm/pnpm/yarn lockfiles
-- Weekly **lock file maintenance**, review required (`minimumReleaseAge` does not gate lockfile refreshes)
+- Weekly **lock file maintenance**, review required (`minimumReleaseAge` does
+  not gate lockfile refreshes)
 - **Semantic commits** enabled (`chore(deps): update package`)
 - **Vulnerability alerts** with security labels
-- **Pins GitHub Actions** to digests; automerges minor/patch only, never a bare digest move
-- **Warnings on Shai-Hulud affected packages**
-- Supports **Bun, npm, pnpm, yarn, Nix, Terraform, Ansible, Docker, GitHub Actions**
+- **Pins GitHub Actions** to digests; automerges minor/patch only, never a bare
+  digest move
+- **428 known-compromised packages** gated behind dashboard approval
+- Supports **npm, pnpm, yarn, Bun, Deno, Rust, Nix, Terraform, Ansible,
+  Docker, GitHub Actions**
 
 ### 🛠️ Supported Ecosystems
 
@@ -57,6 +70,7 @@ A shared Renovate preset for organizations and personal repos. Security-first wi
 | Category            | Technologies                         |
 | ------------------- | ------------------------------------ |
 | **JavaScript/Node** | npm • pnpm • yarn • Bun • Deno       |
+| **Systems**         | Rust (cargo)                         |
 | **System & Infra**  | Nix • Terraform • Ansible            |
 | **Containers**      | Docker                               |
 | **CI/CD**           | GitHub Actions                       |
@@ -71,7 +85,7 @@ A shared Renovate preset for organizations and personal repos. Security-first wi
 Drop this file into a new repo and you are done:
 
 ```json
-{ "extends": ["github>miccy/renovate-config"] }
+{ "extends": ["local>ownctrl/supply-chain"] }
 ```
 
 That is the whole setup. The preset carries the schedule, grouping, automerge
@@ -95,11 +109,35 @@ That last point is the deliberate trade-off: production dependencies, lockfile
 refreshes and bare digest moves are the paths a supply-chain attack travels, so
 they are review-gated by design. Expect a handful of clicks a week, not zero.
 
+### `local>` and why it is not `github>`
+
+`local>` resolves against whichever forge Renovate is currently running on, so
+the same line works on GitHub, GitLab, Codeberg and self-hosted Forgejo,
+provided the preset repo is mirrored there under the same path. Use
+`github>ownctrl/supply-chain` only if you want to pin to GitHub specifically
+from another forge.
+
+Pin a release if you do not want your policy to change under you:
+
+```json
+{ "extends": ["local>ownctrl/supply-chain#v1.0"] }
+```
+
 ### Using it under your own account
 
-Fork or copy this repo, then reference your own copy
-(`github>ORG_OR_USER/renovate-config`). The `Setup Owner` workflow rewrites the
-examples and LICENSE to the new owner when you dispatch it manually.
+Copy this repo, then reference your own copy. Do **not** fork it per
+organisation — inherit instead, so one security fix does not have to be applied
+once per copy:
+
+```json
+{
+  "extends": ["local>ownctrl/supply-chain"],
+  "labels": ["dependencies", "yourbrand"]
+}
+```
+
+The `Setup Owner` workflow rewrites the examples and LICENSE to the new owner
+when you dispatch it manually.
 
 ### JavaScript runtimes and package managers
 
@@ -145,7 +183,7 @@ lockfile refreshes are performed by the incumbent package manager, not by nub.
 | Setting | Value | Reason |
 |---------|-------|--------|
 | `minimumReleaseAge` | 7 days | Avoid freshly published packages (set as a packageRule for npm, which outranks the top-level value) |
-| `npm:unpublishSafe` | enabled | Avoid unpublished packages |
+| `security:minimumReleaseAgeNpm` | enabled | Avoid freshly published and unpublished packages |
 | `rangeStrategy` | pin | Lock exact versions (npm, bun, deno) |
 | `prConcurrentLimit` | 4 | Avoid PR storms |
 | `schedule` | Mondays 06:00 | Weekly updates |
@@ -180,16 +218,12 @@ For maximum security during active supply chain attacks ([example](./examples/re
 
 ```json
 {
-  "extends": ["github>ORG_OR_USER/renovate-config"],
-  "stabilityDays": 14,
-  "minimumReleaseAge": "14 days",
+  "extends": ["local>ownctrl/supply-chain"],
   "prConcurrentLimit": 2,
   "dependencyDashboardApproval": true,
   "packageRules": [
-    {
-      "matchPackagePatterns": ["*"],
-      "automerge": false
-    }
+    { "matchDatasources": ["npm"], "minimumReleaseAge": "14 days" },
+    { "matchPackageNames": ["*"], "automerge": false }
   ]
 }
 ```
@@ -200,14 +234,9 @@ Balanced security without too much friction ([example](./examples/renovate-secur
 
 ```json
 {
-  "extends": ["github>ORG_OR_USER/renovate-config"],
-  "stabilityDays": 7,
-  "minimumReleaseAge": "7 days",
+  "extends": ["local>ownctrl/supply-chain"],
   "packageRules": [
-    {
-      "matchDepTypes": ["dependencies"],
-      "automerge": false
-    }
+    { "matchDepTypes": ["dependencies"], "automerge": false }
   ]
 }
 ```
@@ -218,10 +247,13 @@ For non-critical projects where you want faster updates ([example](./examples/re
 
 ```json
 {
-  "extends": ["github>ORG_OR_USER/renovate-config"],
+  "extends": ["local>ownctrl/supply-chain"],
   "schedule": ["at any time"],
   "prConcurrentLimit": 10,
-  "stabilityDays": 0
+  "minimumReleaseAge": null,
+  "packageRules": [
+    { "matchDatasources": ["npm"], "minimumReleaseAge": null }
+  ]
 }
 ```
 
@@ -233,10 +265,10 @@ For critical projects requiring manual review ([example](./examples/renovate-no-
 
 ```json
 {
-  "extends": ["github>ORG_OR_USER/renovate-config"],
+  "extends": ["local>ownctrl/supply-chain"],
   "packageRules": [
     {
-      "matchPackagePatterns": ["*"],
+      "matchPackageNames": ["*"],
       "automerge": false
     }
   ]
@@ -249,7 +281,7 @@ For teams in different timezones:
 
 ```json
 {
-  "extends": ["github>ORG_OR_USER/renovate-config"],
+  "extends": ["local>ownctrl/supply-chain"],
   "timezone": "America/New_York",
   "schedule": ["before 09:00 on monday"]
 }
