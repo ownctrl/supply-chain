@@ -160,7 +160,7 @@
       "prPriority": 10
     },
     {
-      "description": "⚠️ SHAI-HULUD: Block known compromised packages",
+      "description": "⚠️ SHAI-HULUD: Gate known-compromised packages behind dashboard approval (updates stay enabled so fixed versions can land)",
       "matchPackageNames": [
         "02-echo",
         "@accordproject/concerto-linter-default-ruleset",
