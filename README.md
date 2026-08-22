@@ -144,7 +144,7 @@ from another forge.
 Pin a release if you do not want your policy to change under you:
 
 ```json
-{ "extends": ["local>ownctrl/supply-chain#v1.0"] }
+{ "extends": ["local>ownctrl/supply-chain#v1.0.0"] }
 ```
 
 ### Using it under your own account
