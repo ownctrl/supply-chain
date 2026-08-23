@@ -31,3 +31,7 @@ fi
 echo "validating ${#presets[@]} presets against renovate@${RENOVATE_VERSION}"
 npx --yes --package "renovate@${RENOVATE_VERSION}" -- \
   renovate-config-validator --strict "${presets[@]}"
+
+# The validator checks that the rules are well formed, not what they decide.
+# Every fault this preset has shipped passed it.
+python3 tooling/test_policy.py

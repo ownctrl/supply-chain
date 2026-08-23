@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 ![Ecosystems](https://img.shields.io/badge/ecosystems-10+-blue.svg)
 
@@ -245,6 +245,23 @@ ln -s ../../tooling/validate.sh .git/hooks/pre-push
 
 A local hook is a convenience, not a boundary — anyone can skip it. CI stays the
 real gate.
+
+### What the gate checks
+
+`validate.sh` runs two things, and the second matters more:
+
+- `renovate-config-validator --strict` — the presets are well formed
+- `tooling/test_policy.py` — the presets *decide* what they should
+
+The validator checks shape, not meaning. Every fault this preset has shipped
+passed it: an unanchored pattern granting trust to a namespace nobody owns, a
+rule ordered so it undid the one above it, two manager names that do not exist.
+The policy test freezes those as cases, and fails if lockfile maintenance ever
+gets automerge back.
+
+It reimplements Renovate's matching rather than calling Renovate, so it can
+drift from the real engine. A failure is a reason to look; a pass is weaker
+evidence than a dry run.
 
 ## Testing locally
 

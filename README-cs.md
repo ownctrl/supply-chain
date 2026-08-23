@@ -157,6 +157,23 @@ Pozor na jedno omezení: **`renovate-config-validator` nevaliduje názvy
 managerů.** `matchManagers: ["npm", "pnpm", "yarn"]` projde čistě a nematchuje
 nic. Gate pokrývá schéma, ne význam.
 
+### Co gate kontroluje
+
+`validate.sh` pouští dvě věci a ta druhá je důležitější:
+
+- `renovate-config-validator --strict` — presety jsou správně zapsané
+- `tooling/test_policy.py` — presety **rozhodují** to, co mají
+
+Validátor kontroluje tvar, ne význam. Každá chyba, kterou tenhle preset vydal,
+jím prošla: neukotvený vzor dávající důvěru namespace, který nikdo nevlastní,
+pravidlo zařazené tak, že rušilo to nad sebou, dva neexistující názvy managerů.
+Policy test je má zmrazené jako případy a spadne, kdyby obnova lockfilu zase
+dostala automerge.
+
+Renovate matching reimplementuje, místo aby volal Renovate, takže se od
+skutečného enginu může rozejít. Selhání je důvod se podívat; průchod je slabší
+důkaz než dry run.
+
 ## Pod vlastním účtem
 
 Repozitář si zkopíruj, ale **neforkuj ho pro každou organizaci zvlášť.**
