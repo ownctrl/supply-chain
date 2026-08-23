@@ -13,6 +13,8 @@ set -euo pipefail
 
 # renovate: datasource=npm depName=renovate
 RENOVATE_VERSION="${RENOVATE_VERSION:-44.39.1}"
+# renovate: datasource=npm depName=@biomejs/biome
+BIOME_VERSION="${BIOME_VERSION:-2.5.9}"
 
 cd "$(dirname "$0")/.."
 
@@ -31,3 +33,12 @@ fi
 echo "validating ${#presets[@]} presets against renovate@${RENOVATE_VERSION}"
 npx --yes --package "renovate@${RENOVATE_VERSION}" -- \
   renovate-config-validator --strict "${presets[@]}"
+
+# The validator checks that the rules are well formed, not what they decide.
+# Every fault this preset has shipped passed it.
+python3 tooling/test_policy.py
+
+# Formatting. Pinned to the version biome.json declares -- biome rejects a
+# schema from a different release, so the two move together or not at all.
+echo "checking formatting with @biomejs/biome@${BIOME_VERSION}"
+npx --yes --package "@biomejs/biome@${BIOME_VERSION}" -- biome check .

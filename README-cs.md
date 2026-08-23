@@ -157,10 +157,34 @@ Pozor na jedno omezení: **`renovate-config-validator` nevaliduje názvy
 managerů.** `matchManagers: ["npm", "pnpm", "yarn"]` projde čistě a nematchuje
 nic. Gate pokrývá schéma, ne význam.
 
-## Pod vlastním účtem
+### Co gate kontroluje
 
-Repozitář si zkopíruj, ale **neforkuj ho pro každou organizaci zvlášť.**
-Dědění je levnější:
+`validate.sh` pouští dvě věci a ta druhá je důležitější:
+
+- `renovate-config-validator --strict` — presety jsou správně zapsané
+- `tooling/test_policy.py` — presety **rozhodují** to, co mají
+
+Validátor kontroluje tvar, ne význam. Každá chyba, kterou tenhle preset vydal,
+jím prošla: neukotvený vzor dávající důvěru namespace, který nikdo nevlastní,
+pravidlo zařazené tak, že rušilo to nad sebou, dva neexistující názvy managerů.
+Policy test je má zmrazené jako případy a spadne, kdyby obnova lockfilu zase
+dostala automerge.
+
+Renovate matching reimplementuje, místo aby volal Renovate, takže se od
+skutečného enginu může rozejít. Selhání je důvod se podívat; průchod je slabší
+důkaz než dry run.
+
+## Tři způsoby, jak si to vzít, a co který stojí
+
+**Jen dědit.** Opravy k tobě dorazí ve chvíli, kdy vzniknou. Nic neudržuješ.
+
+```json
+{ "extends": ["github>ownctrl/supply-chain"] }
+```
+
+**Dědit a přebít.** Totéž plus vlastní doplňky. Tohle použij pro druhou značku
+nebo tým místo forku — jedna bezpečnostní oprava by se neměla dělat tolikrát,
+kolik máš kopií.
 
 ```json
 {
@@ -169,7 +193,59 @@ Dědění je levnější:
 }
 ```
 
-Fork znamená opravit každou bezpečnostní vadu tolikrát, kolik máš kopií.
+**Vzít si kopii.** Tenhle repozitář je GitHub template. Sáhni po něm, když
+politiku potřebuješ vlastnit — odstřižené prostředí, požadavek na compliance,
+nesouhlas s nějakým rozhodnutím tady.
+
+Ale ber to s cenovkou: **kopie přestane dostávat opravy.** V tomhle presetu
+se našly čtyři vady, na které by nikdo nepřišel čtením dokumentace, a kopie
+vzatá před kteroukoli z nich si ji nechala. U bezpečnostní politiky je tohle
+ten drahý směr.
+
+Když chceš vlastní adresu **i** opravy, ať tvoje kopie dědí odsud:
+
+```json
+{
+  "extends": ["github>ownctrl/supply-chain"],
+  "packageRules": [ /* jen tvoje odchylky */ ]
+}
+```
+
+Workflow `Setup Owner` po ručním spuštění přepíše reference a LICENSE na
+nového vlastníka.
+
+## Co to nedělá
+
+Preset rozhoduje, které aktualizace závislostí smějí přistát bez lidského
+pohledu. To je celý jeho rozsah a stojí za to říct natvrdo, kde končí:
+
+- **Hlídá aktualizace, ne to, co už máš.** Hostilní verze, která ti už leží
+  v lockfilu, je mimo jeho dosah. Zkontroluj lockfile přímo a rotuj všechno, na
+  co ten balíček mohl dosáhnout.
+- **Není to skener.** Neprohlíží obsah balíčků, neověřuje, že vydaný artefakt
+  odpovídá zdrojáku, ani nedetekuje kompromitaci. Kombinuj ho s něčím, co to
+  umí.
+- **Odstup není záruka.** `minimumReleaseAge` kupuje čas, aby si někdo jiný
+  všiml špatného vydání. Nemusí si všimnout nikdo. Shai-Hulud zůstal
+  u některých balíčků nepovšimnutý déle než sedm dní.
+- **Watch list je snímek.** 428 balíčků známých z jednoho útoku v listopadu
+  2025. O tom příštím neříká nic.
+- **Policy test reimplementuje Renovate matching**, místo aby volal Renovate,
+  takže se od skutečného enginu může rozejít.
+
+Poskytováno tak, jak je, bez záruky, pod [licencí MIT](./LICENSE). Rozhodnutí,
+co smí tvůj projekt sloučit bez dozoru, je tvoje; tenhle preset je výchozí bod
+s odůvodněním, ne náhrada za to rozhodnutí.
+
+## Workflow `Setup Owner`
+
+`.github/workflows/setup-owner.yml` je tu pro cestu s kopií. Po ručním
+spuštění přepíše reference presetu a copyright v LICENSE na nového vlastníka
+a pak sám sebe smaže.
+
+Běží s `contents: write` a pushuje na výchozí větev, což k té práci potřebuje.
+Je jen `workflow_dispatch` — nic ho nespouští automaticky. Když preset dědíš
+místo kopírování, nikdy ho nepustíš.
 
 ## Verzování
 

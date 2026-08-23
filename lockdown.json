@@ -1,37 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "🔒 Lockdown: no automerge anywhere, 14-day floor, every update waits for dashboard approval. For use during an active supply-chain incident.",
-  "extends": [
-    "local>ownctrl/supply-chain"
-  ],
-  "schedule": [
-    "before 06:00 on monday"
-  ],
+  "extends": ["local>ownctrl/supply-chain"],
+  "schedule": ["before 06:00 on monday"],
   "minimumReleaseAge": "14 days",
   "prConcurrentLimit": 2,
   "dependencyDashboardApproval": true,
   "packageRules": [
     {
       "description": "LOCKDOWN: npm floor to 14 days -- must be a packageRule, the top-level value is outranked by the inherited npm rule",
-      "matchDatasources": [
-        "npm"
-      ],
+      "matchDatasources": ["npm"],
       "minimumReleaseAge": "14 days"
     },
     {
       "description": "LOCKDOWN: Disable ALL automerge",
       "automerge": false,
       "dependencyDashboardApproval": true,
-      "matchPackageNames": [
-        "*"
-      ]
+      "matchPackageNames": ["*"]
     },
     {
       "description": "LOCKDOWN: Production deps require manual approval",
-      "matchDepTypes": [
-        "dependencies",
-        "peerDependencies"
-      ],
+      "matchDepTypes": ["dependencies", "peerDependencies"],
       "prPriority": -50,
       "prBodyNotes": [
         "🔒 **LOCKDOWN MODE ACTIVE**",
@@ -47,9 +36,7 @@
     },
     {
       "description": "LOCKDOWN: Block all major updates",
-      "matchUpdateTypes": [
-        "major"
-      ],
+      "matchUpdateTypes": ["major"],
       "enabled": false
     }
   ]

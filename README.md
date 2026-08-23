@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 ![Ecosystems](https://img.shields.io/badge/ecosystems-10+-blue.svg)
 
@@ -160,11 +160,17 @@ Pin a release if you do not want your policy to change under you:
 { "extends": ["github>ownctrl/supply-chain#v1.0.0"] }
 ```
 
-### Using it under your own account
+### Three ways to adopt this, and what each costs
 
-Copy this repo, then reference your own copy. Do **not** fork it per
-organisation — inherit instead, so one security fix does not have to be applied
-once per copy:
+**Just extend it.** Fixes reach you the moment they land. Nothing to maintain.
+
+```json
+{ "extends": ["github>ownctrl/supply-chain"] }
+```
+
+**Extend it and override.** Same, plus your own additions. Use this for a
+second brand or team rather than forking — one security fix should not have to
+be applied once per copy.
 
 ```json
 {
@@ -173,8 +179,26 @@ once per copy:
 }
 ```
 
-The `Setup Owner` workflow rewrites the examples and LICENSE to the new owner
-when you dispatch it manually.
+**Take a copy.** This repo is a GitHub template. Use it when you need to own
+the policy outright — an air-gapped mirror, a compliance requirement, a
+disagreement with a decision here.
+
+Be clear about the price: **a copy stops receiving fixes.** Four faults were
+found in this preset that no amount of reading the documentation would have
+surfaced, and a copy taken before each one kept it. For a security policy that
+is the expensive direction.
+
+If you want your own address *and* the fixes, have your copy extend upstream:
+
+```json
+{
+  "extends": ["github>ownctrl/supply-chain"],
+  "packageRules": [ /* your deviations, and only those */ ]
+}
+```
+
+The `Setup Owner` workflow rewrites the preset references and LICENSE to the
+new owner when you dispatch it manually.
 
 ### JavaScript runtimes and package managers
 
@@ -246,6 +270,23 @@ ln -s ../../tooling/validate.sh .git/hooks/pre-push
 A local hook is a convenience, not a boundary — anyone can skip it. CI stays the
 real gate.
 
+### What the gate checks
+
+`validate.sh` runs two things, and the second matters more:
+
+- `renovate-config-validator --strict` — the presets are well formed
+- `tooling/test_policy.py` — the presets *decide* what they should
+
+The validator checks shape, not meaning. Every fault this preset has shipped
+passed it: an unanchored pattern granting trust to a namespace nobody owns, a
+rule ordered so it undid the one above it, two manager names that do not exist.
+The policy test freezes those as cases, and fails if lockfile maintenance ever
+gets automerge back.
+
+It reimplements Renovate's matching rather than calling Renovate, so it can
+drift from the real engine. A failure is a reason to look; a pass is weaker
+evidence than a dry run.
+
 ## Testing locally
 
 You can test this config locally before deploying:
@@ -308,6 +349,40 @@ Sourced from the Datadog IOC database. These are gated behind dashboard approval
 The full list lives in [`default.json`](./default.json). Affected version ranges are in the [Datadog IOC database](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0).
 
 ---
+
+## What this does not do
+
+This preset decides which dependency updates may merge unattended. That is its
+whole scope, and it is worth being blunt about the edges:
+
+- **It gates updates, not what you already have.** A hostile version already in
+  your lockfile is outside its reach. Check the lockfile directly and rotate
+  anything the package could have read.
+- **It is not a scanner.** It does not inspect package contents, verify that a
+  published artifact matches its source, or detect compromise. Pair it with
+  something that does.
+- **A delay is not a guarantee.** `minimumReleaseAge` buys time for someone
+  else to notice a bad release. Nobody may notice. Shai-Hulud went unnoticed
+  for longer than seven days in some packages.
+- **The watch list is a snapshot.** 428 packages known compromised in one
+  attack, in November 2025. It says nothing about the next one.
+- **The policy test reimplements Renovate's matching** rather than calling
+  Renovate, so it can drift from the real engine.
+
+Provided as is, without warranty, under the [MIT licence](./LICENSE). Deciding
+what your project may merge unattended is your decision; this preset is a
+starting point with reasoning attached, not a substitute for making it.
+
+## The `Setup Owner` workflow
+
+`.github/workflows/setup-owner.yml` exists for the copy path. Dispatch it
+manually after taking a copy and it rewrites the preset references and the
+LICENSE copyright to whoever now owns the repo, then deletes itself.
+
+It runs with `contents: write` and pushes to the default branch, which is what
+it needs to do that job. It is `workflow_dispatch` only — nothing triggers it
+automatically. If you are extending this preset rather than copying it, you
+will never run it.
 
 ## Versioning
 
