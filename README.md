@@ -69,16 +69,26 @@ version ranges are published in the
 
 <div align="center">
 
-| Category            | Technologies                         |
-| ------------------- | ------------------------------------ |
-| **JavaScript/Node** | npm • pnpm • yarn • Bun • Deno       |
-| **Systems**         | Rust (cargo)                         |
-| **System & Infra**  | Nix • Terraform • Ansible            |
-| **Containers**      | Docker                               |
-| **CI/CD**           | GitHub Actions                       |
-| **Languages**       | TypeScript • Python (pip) • Go (mod) |
-| **Linting**         | Biome • Oxlint                       |
-| **Testing**         | Vitest • Jest                        |
+| Category | Grouped as | Managers |
+| --- | --- | --- |
+| **JavaScript / TypeScript** | *(base)* | npm (covers npm, pnpm, yarn), bun, bun-version |
+| **Deno** | Deno | deno |
+| **Rust** | Rust | cargo |
+| **Go** | Go | gomod |
+| **Python** | Python | pip_requirements, pip-compile, poetry, pep621, pipenv, setup-cfg |
+| **JVM** | JVM | gradle, gradle-wrapper, maven, maven-wrapper, sbt |
+| **.NET** | .NET | nuget |
+| **PHP** | PHP | composer |
+| **Ruby** | Ruby | bundler |
+| **Dart / Flutter** | Dart | pub |
+| **Swift** | Swift | swift, cocoapods |
+| **Infrastructure** | Nix / Terraform / Ansible | nix, terraform, ansible |
+| **Containers** | Docker digests | docker |
+| **Kubernetes** | Kubernetes | kubernetes, helmv3, helm-values, helm-requirements, helmfile, flux, argocd |
+| **CI/CD** | CI: GitHub Actions | github-actions |
+
+Anything not listed still gets updates — everything non-major groups into one
+PR by default, and the rules above only split specific ecosystems back out.
 
 </div>
 
@@ -87,7 +97,7 @@ version ranges are published in the
 Drop this file into a new repo and you are done:
 
 ```json
-{ "extends": ["local>ownctrl/supply-chain"] }
+{ "extends": ["github>ownctrl/supply-chain"] }
 ```
 
 That is the whole setup. The preset carries the schedule, grouping, automerge
@@ -117,8 +127,7 @@ run is the part that differs, and only GitHub.com is free of setup:
 
 This is a property of the Renovate ecosystem, not of this preset — you would
 face it with any preset, or with none. Mirroring this repo to another forge is
-about making `local>ownctrl/supply-chain` resolvable there; nothing runs on
-the mirror itself.
+about making the preset resolvable there; nothing runs on the mirror itself.
 
 ### What to expect on a fresh repo
 
@@ -135,18 +144,20 @@ That last point is the deliberate trade-off: production dependencies, lockfile
 refreshes and bare digest moves are the paths a supply-chain attack travels, so
 they are review-gated by design. Expect a handful of clicks a week, not zero.
 
-### `local>` and why it is not `github>`
+### `github>` and when to use `local>` instead
+
+`github>` names the forge explicitly and is the right default today, because
+GitHub is where this repo actually lives.
 
 `local>` resolves against whichever forge Renovate is currently running on, so
-the same line works on GitHub, GitLab, Codeberg and self-hosted Forgejo,
-provided the preset repo is mirrored there under the same path. Use
-`github>ownctrl/supply-chain` only if you want to pin to GitHub specifically
-from another forge.
+one line would work on GitHub, GitLab, Codeberg and self-hosted Forgejo alike —
+but only once the preset is mirrored to each of them under the same path. It is
+not, yet. Reach for `local>` when you maintain your own mirrored copy.
 
 Pin a release if you do not want your policy to change under you:
 
 ```json
-{ "extends": ["local>ownctrl/supply-chain#v1.0.0"] }
+{ "extends": ["github>ownctrl/supply-chain#v1.0.0"] }
 ```
 
 ### Using it under your own account
@@ -157,7 +168,7 @@ once per copy:
 
 ```json
 {
-  "extends": ["local>ownctrl/supply-chain"],
+  "extends": ["github>ownctrl/supply-chain"],
   "labels": ["dependencies", "yourbrand"]
 }
 ```
@@ -256,16 +267,16 @@ Each of these is a ready preset, not a snippet to copy. Reference it directly:
 
 | Preset | Reference | What it changes |
 | --- | --- | --- |
-| base | `local>ownctrl/supply-chain` | the policy described above |
-| lockdown | `local>ownctrl/supply-chain:lockdown` | nothing automerges, 14-day npm floor, every update waits for dashboard approval |
-| no-automerge | `local>ownctrl/supply-chain:no-automerge` | automerge off, everything else unchanged |
-| aggressive | `local>ownctrl/supply-chain:aggressive` | any time, no release-age floor, higher PR limit |
+| base | `github>ownctrl/supply-chain` | the policy described above |
+| lockdown | `github>ownctrl/supply-chain:lockdown` | nothing automerges, 14-day npm floor, every update waits for dashboard approval |
+| no-automerge | `github>ownctrl/supply-chain:no-automerge` | automerge off, everything else unchanged |
+| aggressive | `github>ownctrl/supply-chain:aggressive` | any time, no release-age floor, higher PR limit |
 
 Reach for **lockdown** during an active supply-chain incident and **aggressive**
 only when you are certain there is not one.
 
 ```json
-{ "extends": ["local>ownctrl/supply-chain:lockdown"] }
+{ "extends": ["github>ownctrl/supply-chain:lockdown"] }
 ```
 
 Sub-presets extend the base themselves, so you do not list both.
@@ -276,7 +287,7 @@ For teams in different timezones:
 
 ```json
 {
-  "extends": ["local>ownctrl/supply-chain"],
+  "extends": ["github>ownctrl/supply-chain"],
   "timezone": "America/New_York",
   "schedule": ["before 09:00 on monday"]
 }
