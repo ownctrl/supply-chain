@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-23
+
 ### Fixed
 
 - Stopped linking readers to a repository they cannot open. `dont-be-shy-hulud`
@@ -87,5 +89,6 @@ injection in the `setup-owner` workflow.
 - Renovate has a hosted app on GitHub.com only. Every other forge needs it
   self-hosted.
 
-[Unreleased]: https://github.com/ownctrl/supply-chain/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/ownctrl/supply-chain/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/ownctrl/supply-chain/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/ownctrl/supply-chain/releases/tag/v1.0.0
