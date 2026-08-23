@@ -309,14 +309,43 @@ The full list lives in [`default.json`](./default.json). Affected version ranges
 
 ---
 
+## Versioning
+
+`main` is what an unpinned `github>ownctrl/supply-chain` resolves to, so every
+merge reaches those consumers immediately. Tags exist for the people who pinned.
+Merge as often as you like; cut a tag when a pinned consumer has a reason to
+move.
+
+There is no API here to version. What a consumer gets from this preset is one
+thing — **what merges without them looking** — so that is what the number
+tracks.
+
+| | Meaning | Example |
+| --- | --- | --- |
+| **MAJOR** | something now merges unattended that did not before, or an existing config breaks | adding a package to the trusted list; renaming a sub-preset |
+| **MINOR** | new coverage that loosens nothing | a new ecosystem group, a new sub-preset, more packages on the watch list |
+| **PATCH** | nothing about what merges changes | documentation, PR body text, our own pinned tooling |
+
+The asymmetry is deliberate. **Tightening is minor, loosening is major**, even
+when the diff is the same size. If something stops automerging, the worst case
+is a few more clicks. If something starts automerging, you have gone around the
+reason someone pinned in the first place — a pin is a promise that the posture
+will not shift underneath them.
+
+So adding one package to the trusted list is a major, one line or not.
+
 ## Related Resources
 
 - 🔒 [Socket.dev](https://socket.dev) — Supply chain security scanning
 - 📊 [Datadog IOCs](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0) — Official IOC list
 
+<div align="right">
+  <a href="#top"><img src="https://img.shields.io/badge/%E2%96%B2_Scroll-Top_%E2%96%B2-white?style=plastic&labelColor=black&color=white" alt="Scroll Top"/></a>
+</div>
+
 ---
 
 <div align="center">
-  <p>Maintained by <a href="https://github.com/ownctrl">ownctrl</a></p>
-  <p>© 2025–2026 <a href="https://github.com/miccy">Miccy</a> · MIT</p>
+  <a href="https://github.com/miccy"><img src="https://img.shields.io/badge/%F0%9F%A9%B7_Maintained%20by-%40miccy-white?style=plastic&labelColor=black&color=white" alt="Maintained by @miccy"/></a>
+  <a href="https://github.com/ownctrl"><img src="https://img.shields.io/badge/%C2%A92026-ownCTRL%E2%84%A2-white?style=plastic&labelColor=black&color=white" alt="© 2026 ownCTRL™"/></a>
 </div>
