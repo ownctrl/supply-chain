@@ -171,7 +171,41 @@ Dědění je levnější:
 
 Fork znamená opravit každou bezpečnostní vadu tolikrát, kolik máš kopií.
 
+## Verzování
+
+`main` je to, co dostane každý, kdo si nepinnul `github>ownctrl/supply-chain` —
+ten má každý merge okamžitě. Tagy jsou pro ty, kdo pinnuli. Mergovat můžeš, jak
+často chceš; tag řež, až má pinnutý konzument důvod se pohnout.
+
+Není tu žádné API k verzování. Konzument z presetu dostává jedinou věc —
+**co se sloučí, aniž se na to podívá** — a to je to, co číslo sleduje.
+
+| | Význam | Příklad |
+| --- | --- | --- |
+| **MAJOR** | něco se nově slučuje samo, co dřív čekalo, nebo přestane fungovat existující config | přidání balíčku mezi důvěryhodné; přejmenování sub-presetu |
+| **MINOR** | nové pokrytí, které nic neuvolňuje | nový ekosystém, nový sub-preset, další balíčky na watch listu |
+| **PATCH** | o slučování se nemění nic | dokumentace, text v PR, náš vlastní pin nástrojů |
+
+Ta asymetrie je záměrná. **Utažení je minor, uvolnění je major**, i když je diff
+stejně velký. Když něco přestane automergovat, nejhorší následek je pár kliků
+navíc. Když něco začne automergovat, obešel jsi důvod, proč si ten člověk pin
+dal — pin je příslib, že se posture nezmění pod rukama.
+
+Takže přidat jeden balíček mezi důvěryhodné je major, i kdyby to byl jeden
+řádek.
+
 ## Odkazy
 
 - 🔒 [Socket.dev](https://socket.dev) — skenování supply chain
 - 📊 [Datadog IOC](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0) — oficiální IOC seznam
+
+<div align="right">
+  <a href="#top"><img src="https://img.shields.io/badge/%E2%96%B2_Scroll-Top_%E2%96%B2-white?style=plastic&labelColor=black&color=white" alt="Scroll Top"/></a>
+</div>
+
+---
+
+<div align="center">
+  <a href="https://github.com/miccy"><img src="https://img.shields.io/badge/%F0%9F%A9%B7_Maintained%20by-%40miccy-white?style=plastic&labelColor=black&color=white" alt="Maintained by @miccy"/></a>
+  <a href="https://github.com/ownctrl"><img src="https://img.shields.io/badge/%C2%A92026-ownCTRL%E2%84%A2-white?style=plastic&labelColor=black&color=white" alt="© 2026 ownCTRL™"/></a>
+</div>
