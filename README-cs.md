@@ -29,8 +29,8 @@ s tím, že se libovolná závislost může mezi dvěma vydáními obrátit prot
 a udělej z toho review místo merge.
 
 Seznam kompromitovaných balíčků se pořád dodává, s podmínkou schválení
-v dashboardu. Detekci a nápravu řeší
-[dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud).
+v dashboardu. Zasažené rozsahy verzí jsou v
+[databázi IOC od Datadogu](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0).
 
 ## Jak to použít
 
@@ -173,6 +173,5 @@ Fork znamená opravit každou bezpečnostní vadu tolikrát, kolik máš kopií.
 
 ## Odkazy
 
-- 🪱 [dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud) — detekce a náprava Shai-Hulud 2.0
 - 🔒 [Socket.dev](https://socket.dev) — skenování supply chain
 - 📊 [Datadog IOC](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0) — oficiální IOC seznam

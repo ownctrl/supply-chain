@@ -36,9 +36,9 @@ scope. It prompted the first version and the 428-package watch list, but the
 policy here is general: assume any dependency can turn hostile between one
 release and the next, and make the blast radius a review instead of a merge.
 
-The watch list still ships, gated behind dashboard approval. See
-[dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud) for detection
-and remediation.
+The watch list still ships, gated behind dashboard approval. Affected
+version ranges are published in the
+[Datadog IOC database](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0).
 
 ## Shared preset
 
@@ -294,19 +294,18 @@ This preset includes warnings for packages affected by the Shai-Hulud 2.0 attack
 
 Sourced from the Datadog IOC database. These are gated behind dashboard approval with a warning attached — not blocked, so fixed versions can still land.
 
-For the complete list, see [dont-be-shy-hulud IOC database](https://github.com/miccy/dont-be-shy-hulud/blob/main/ioc/malicious-packages.json).
+The full list lives in [`default.json`](./default.json). Affected version ranges are in the [Datadog IOC database](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0).
 
 ---
 
 ## Related Resources
 
-- 🪱 [dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud) — Shai-Hulud 2.0 detection and remediation guide
 - 🔒 [Socket.dev](https://socket.dev) — Supply chain security scanning
 - 📊 [Datadog IOCs](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0) — Official IOC list
 
 ---
 
 <div align="center">
-  <p>🛠 Maintained by <a href="https://github.com/miccy">@miccy</a> with 💙</p>
-  <p>© 2025 <a href="https://github.com/miccy">Miccy</a></p>
+  <p>Maintained by <a href="https://github.com/ownctrl">ownctrl</a></p>
+  <p>© 2025–2026 <a href="https://github.com/miccy">Miccy</a> · MIT</p>
 </div>

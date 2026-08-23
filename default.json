@@ -667,8 +667,9 @@
         "⚠️ **SECURITY WARNING**: This package was affected by the Shai-Hulud 2.0 supply chain attack (November 2025).",
         "Before merging, verify:",
         "- [ ] The version is from AFTER the malicious versions were removed",
-        "- [ ] Check [Datadog IOC list](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0) for affected versions",
-        "- [ ] Run `./scripts/detect.sh` from [dont-be-shy-hulud](https://github.com/miccy/dont-be-shy-hulud)"
+        "- [ ] Check the [Datadog IOC list](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0) for the affected version range",
+        "- [ ] Check your lockfile for the affected versions, including transitively",
+        "- [ ] Rotate any credential the package could have reached"
       ]
     }
   ]
