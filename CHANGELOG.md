@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-23
+
+### Added
+
+- `tooling/test_policy.py` — asserts what the presets *decide*, not just that
+  they are well formed. 22 cases over the automerge decision, plus guards on
+  the lockfile gate and on manager names Renovate does not have. Every fault
+  this preset has shipped passed the schema validator; these freeze them.
+- `SECURITY.md` — where to report, what this preset does not do, and its known
+  limitations.
+- Biome runs in the gate, pinned to the version `biome.json` declares.
+- README states what the preset does not do, documents the `Setup Owner`
+  workflow, and gives the three adoption paths with the cost of each. A copy
+  stops receiving fixes; that is now said out loud.
+
+### Changed
+
+- The custom manager keeps both pinned tools updated, not only renovate.
+- JSON formatted by Biome. Verified to change no meaning.
+
 ## [1.0.1] - 2026-08-23
 
 ### Fixed
@@ -89,6 +109,7 @@ injection in the `setup-owner` workflow.
 - Renovate has a hosted app on GitHub.com only. Every other forge needs it
   self-hosted.
 
-[Unreleased]: https://github.com/ownctrl/supply-chain/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/ownctrl/supply-chain/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/ownctrl/supply-chain/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/ownctrl/supply-chain/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/ownctrl/supply-chain/releases/tag/v1.0.0
