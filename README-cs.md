@@ -174,10 +174,17 @@ Renovate matching reimplementuje, místo aby volal Renovate, takže se od
 skutečného enginu může rozejít. Selhání je důvod se podívat; průchod je slabší
 důkaz než dry run.
 
-## Pod vlastním účtem
+## Tři způsoby, jak si to vzít, a co který stojí
 
-Repozitář si zkopíruj, ale **neforkuj ho pro každou organizaci zvlášť.**
-Dědění je levnější:
+**Jen dědit.** Opravy k tobě dorazí ve chvíli, kdy vzniknou. Nic neudržuješ.
+
+```json
+{ "extends": ["github>ownctrl/supply-chain"] }
+```
+
+**Dědit a přebít.** Totéž plus vlastní doplňky. Tohle použij pro druhou značku
+nebo tým místo forku — jedna bezpečnostní oprava by se neměla dělat tolikrát,
+kolik máš kopií.
 
 ```json
 {
@@ -186,7 +193,26 @@ Dědění je levnější:
 }
 ```
 
-Fork znamená opravit každou bezpečnostní vadu tolikrát, kolik máš kopií.
+**Vzít si kopii.** Tenhle repozitář je GitHub template. Sáhni po něm, když
+politiku potřebuješ vlastnit — odstřižené prostředí, požadavek na compliance,
+nesouhlas s nějakým rozhodnutím tady.
+
+Ale ber to s cenovkou: **kopie přestane dostávat opravy.** V tomhle presetu
+se našly čtyři vady, na které by nikdo nepřišel čtením dokumentace, a kopie
+vzatá před kteroukoli z nich si ji nechala. U bezpečnostní politiky je tohle
+ten drahý směr.
+
+Když chceš vlastní adresu **i** opravy, ať tvoje kopie dědí odsud:
+
+```json
+{
+  "extends": ["github>ownctrl/supply-chain"],
+  "packageRules": [ /* jen tvoje odchylky */ ]
+}
+```
+
+Workflow `Setup Owner` po ručním spuštění přepíše reference a LICENSE na
+nového vlastníka.
 
 ## Verzování
 

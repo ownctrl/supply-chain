@@ -140,7 +140,14 @@
     },
     {
       "description": "Python: group together",
-      "matchManagers": ["pip_requirements", "pip-compile", "poetry", "pep621", "pipenv", "setup-cfg"],
+      "matchManagers": [
+        "pip_requirements",
+        "pip-compile",
+        "poetry",
+        "pep621",
+        "pipenv",
+        "setup-cfg"
+      ],
       "groupName": "Python",
       "separateMinorPatch": false
     },
@@ -182,7 +189,15 @@
     },
     {
       "description": "Kubernetes: group together",
-      "matchManagers": ["kubernetes", "helmv3", "helm-values", "helm-requirements", "helmfile", "flux", "argocd"],
+      "matchManagers": [
+        "kubernetes",
+        "helmv3",
+        "helm-values",
+        "helm-requirements",
+        "helmfile",
+        "flux",
+        "argocd"
+      ],
       "groupName": "Kubernetes",
       "separateMinorPatch": false
     },

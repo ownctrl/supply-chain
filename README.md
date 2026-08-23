@@ -160,11 +160,17 @@ Pin a release if you do not want your policy to change under you:
 { "extends": ["github>ownctrl/supply-chain#v1.0.0"] }
 ```
 
-### Using it under your own account
+### Three ways to adopt this, and what each costs
 
-Copy this repo, then reference your own copy. Do **not** fork it per
-organisation — inherit instead, so one security fix does not have to be applied
-once per copy:
+**Just extend it.** Fixes reach you the moment they land. Nothing to maintain.
+
+```json
+{ "extends": ["github>ownctrl/supply-chain"] }
+```
+
+**Extend it and override.** Same, plus your own additions. Use this for a
+second brand or team rather than forking — one security fix should not have to
+be applied once per copy.
 
 ```json
 {
@@ -173,8 +179,26 @@ once per copy:
 }
 ```
 
-The `Setup Owner` workflow rewrites the examples and LICENSE to the new owner
-when you dispatch it manually.
+**Take a copy.** This repo is a GitHub template. Use it when you need to own
+the policy outright — an air-gapped mirror, a compliance requirement, a
+disagreement with a decision here.
+
+Be clear about the price: **a copy stops receiving fixes.** Four faults were
+found in this preset that no amount of reading the documentation would have
+surfaced, and a copy taken before each one kept it. For a security policy that
+is the expensive direction.
+
+If you want your own address *and* the fixes, have your copy extend upstream:
+
+```json
+{
+  "extends": ["github>ownctrl/supply-chain"],
+  "packageRules": [ /* your deviations, and only those */ ]
+}
+```
+
+The `Setup Owner` workflow rewrites the preset references and LICENSE to the
+new owner when you dispatch it manually.
 
 ### JavaScript runtimes and package managers
 
