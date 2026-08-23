@@ -350,6 +350,40 @@ The full list lives in [`default.json`](./default.json). Affected version ranges
 
 ---
 
+## What this does not do
+
+This preset decides which dependency updates may merge unattended. That is its
+whole scope, and it is worth being blunt about the edges:
+
+- **It gates updates, not what you already have.** A hostile version already in
+  your lockfile is outside its reach. Check the lockfile directly and rotate
+  anything the package could have read.
+- **It is not a scanner.** It does not inspect package contents, verify that a
+  published artifact matches its source, or detect compromise. Pair it with
+  something that does.
+- **A delay is not a guarantee.** `minimumReleaseAge` buys time for someone
+  else to notice a bad release. Nobody may notice. Shai-Hulud went unnoticed
+  for longer than seven days in some packages.
+- **The watch list is a snapshot.** 428 packages known compromised in one
+  attack, in November 2025. It says nothing about the next one.
+- **The policy test reimplements Renovate's matching** rather than calling
+  Renovate, so it can drift from the real engine.
+
+Provided as is, without warranty, under the [MIT licence](./LICENSE). Deciding
+what your project may merge unattended is your decision; this preset is a
+starting point with reasoning attached, not a substitute for making it.
+
+## The `Setup Owner` workflow
+
+`.github/workflows/setup-owner.yml` exists for the copy path. Dispatch it
+manually after taking a copy and it rewrites the preset references and the
+LICENSE copyright to whoever now owns the repo, then deletes itself.
+
+It runs with `contents: write` and pushes to the default branch, which is what
+it needs to do that job. It is `workflow_dispatch` only — nothing triggers it
+automatically. If you are extending this preset rather than copying it, you
+will never run it.
+
 ## Versioning
 
 `main` is what an unpinned `github>ownctrl/supply-chain` resolves to, so every

@@ -214,6 +214,39 @@ Když chceš vlastní adresu **i** opravy, ať tvoje kopie dědí odsud:
 Workflow `Setup Owner` po ručním spuštění přepíše reference a LICENSE na
 nového vlastníka.
 
+## Co to nedělá
+
+Preset rozhoduje, které aktualizace závislostí smějí přistát bez lidského
+pohledu. To je celý jeho rozsah a stojí za to říct natvrdo, kde končí:
+
+- **Hlídá aktualizace, ne to, co už máš.** Hostilní verze, která ti už leží
+  v lockfilu, je mimo jeho dosah. Zkontroluj lockfile přímo a rotuj všechno, na
+  co ten balíček mohl dosáhnout.
+- **Není to skener.** Neprohlíží obsah balíčků, neověřuje, že vydaný artefakt
+  odpovídá zdrojáku, ani nedetekuje kompromitaci. Kombinuj ho s něčím, co to
+  umí.
+- **Odstup není záruka.** `minimumReleaseAge` kupuje čas, aby si někdo jiný
+  všiml špatného vydání. Nemusí si všimnout nikdo. Shai-Hulud zůstal
+  u některých balíčků nepovšimnutý déle než sedm dní.
+- **Watch list je snímek.** 428 balíčků známých z jednoho útoku v listopadu
+  2025. O tom příštím neříká nic.
+- **Policy test reimplementuje Renovate matching**, místo aby volal Renovate,
+  takže se od skutečného enginu může rozejít.
+
+Poskytováno tak, jak je, bez záruky, pod [licencí MIT](./LICENSE). Rozhodnutí,
+co smí tvůj projekt sloučit bez dozoru, je tvoje; tenhle preset je výchozí bod
+s odůvodněním, ne náhrada za to rozhodnutí.
+
+## Workflow `Setup Owner`
+
+`.github/workflows/setup-owner.yml` je tu pro cestu s kopií. Po ručním
+spuštění přepíše reference presetu a copyright v LICENSE na nového vlastníka
+a pak sám sebe smaže.
+
+Běží s `contents: write` a pushuje na výchozí větev, což k té práci potřebuje.
+Je jen `workflow_dispatch` — nic ho nespouští automaticky. Když preset dědíš
+místo kopírování, nikdy ho nepustíš.
+
 ## Verzování
 
 `main` je to, co dostane každý, kdo si nepinnul `github>ownctrl/supply-chain` —
