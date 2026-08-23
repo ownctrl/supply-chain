@@ -10,6 +10,8 @@
 
 _Multi-ecosystem • Multi-forge • Review-gated by default_
 
+[Česká verze](./README-cs.md)
+
 </div>
 
 ---
